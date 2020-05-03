@@ -310,7 +310,7 @@ int crypt_init(char * password, char * Init_vec){
 	char * vector = "athenstiromni"; //TODO: Random init vector;
 	size_t vLength = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
 	cryptoError =
-		gcry_cipher_setiv(crypto, init_vec, vLength);
+		gcry_cipher_setiv(crypto, vector, vLength);
 	
 	if(cryptoError){
 		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
