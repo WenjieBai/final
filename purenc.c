@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 	// generate IV
 	size_t vector_len = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
 	char *vector = malloc(vector_len);
-	gen_random(vector, vector_len));
+	gen_random(vector, vector_len);
 	gcryErr = gcry_cipher_setiv(crypto, vector, vector_len);
 	// printf("vec len %d\n", vector_len);
 
@@ -286,18 +286,13 @@ int main(int argc, char *argv[])
 			perror("phrase 1 error");
 		}
 
-		//phrase 2 send encrypted data
-		while (int readret = fread(buffer, 1, 1024, in))
+		//phrase 2: send encrypted data
+		int readret ;
+		while ((readret = fread(buffer, 1, 1024, in)) > 0)
 		{
-			if (readret < 0)
-			{
-				perror("read error\n");
-			}
-			else
-			{
-				printf("read %d bytes, ", readret);
-			}
-
+			
+			printf("read %d bytes, ", readret);
+			
 			//Buffer for encrypted data
 			size_t out_size = readret + 1024;
 			char *out_buffer = malloc(out_size);
@@ -320,7 +315,7 @@ int main(int argc, char *argv[])
 				int sendret = send(sock, out_buffer, readret + 16, 0);
 				if (sendret < 0)
 				{
-					perror("sent error in phrase 2")
+					perror("sent error in phrase 2");
 				}
 				else
 				{
@@ -337,9 +332,9 @@ int main(int argc, char *argv[])
 		char trans_complete[] = "transmissioncompleted";
 		send(sock, trans_complete, strlen(trans_complete), 0);
 
-		printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix total_size);
-		printf("transmitting to %s", argv[3]);
-		printf("successfully received");
+		printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
+		printf("transmitting to %s.\n", argv[3]);
+		printf("successfully received.\n");
 
 		close(sock);
 	}
