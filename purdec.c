@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 		else if (!strcmp(argv[1], "-d"))
 		{
 			distant_mode = 1;
-			distantmode(argv[2], password);
+			// distantmode(argv[2], password);
 		}
 		else
 		{
