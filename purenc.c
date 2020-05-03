@@ -16,6 +16,7 @@ char *filename;
 char *filename_suffix;
 int local_mode;
 int distant_mode;
+int total_size;
 
 void localmode(char *password);
 void distantmode(char *address, char *password);
@@ -257,7 +258,7 @@ void distantmode(char *address, char *password)
 
 	int readret;
 
-	while ((readret = fread(buffer, 1, 1024, in)) > 0)
+	while ((readret = fread(in_buffer, 1, 1024, in)) > 0)
 	{
 
 		printf("read %d bytes, ", readret);
@@ -267,7 +268,7 @@ void distantmode(char *address, char *password)
 		char *out_buffer = malloc(out_size);
 
 		//encryption
-		gcryErr = gcry_cipher_encrypt(
+		gcry_error_t gcryErr = gcry_cipher_encrypt(
 			crypto,		//gcry_cipher_hd_t h
 			out_buffer, //unsigned char *out
 			out_size,	//size_t out_size
@@ -277,7 +278,7 @@ void distantmode(char *address, char *password)
 		if (gcryErr)
 		{
 			printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
-			return 1;
+			exit(0);
 		}
 		else
 		{
@@ -300,22 +301,17 @@ void distantmode(char *address, char *password)
 	send(sock, trans_complete, strlen(trans_complete), 0);
 
 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
-	printf("transmitting to %s.\n", argv[3]);
+	printf("transmitting to %s.\n", address);
 	printf("successfully received.\n");
 
 	close(sock);
-}
 
-//Close the file
-fclose(in);
-if (local_mode)
-{
-	fclose(out);
-}
+	//Close the file
+	fclose(in);
+	free(in_buffer);
 
-//Close the crypto handler
-gcry_cipher_close(crypto);
+	//Close the crypto handler
+	gcry_cipher_close(crypto);
 
-//Free memory
-free(buffer);
+	
 }
