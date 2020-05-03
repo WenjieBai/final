@@ -259,67 +259,67 @@ void distantmode(char *address, char *password)
 	}
 
 	//phrase 2: send encrypted data
-	// 	int readret ;
-	// 	while ((readret = fread(buffer, 1, 1024, in)) > 0)
-	// 	{
+		int readret ;
+		while ((readret = fread(buffer, 1, 1024, in)) > 0)
+		{
 
-	// 		printf("read %d bytes, ", readret);
+			printf("read %d bytes, ", readret);
 
-	// 		//Buffer for encrypted data
-	// 		size_t out_size = readret + 1024;
-	// 		char *out_buffer = malloc(out_size);
+			//Buffer for encrypted data
+			size_t out_size = readret + 1024;
+			char *out_buffer = malloc(out_size);
 
-	// 		//encryption
-	// 		gcryErr = gcry_cipher_encrypt(
-	// 			crypto,		//gcry_cipher_hd_t h
-	// 			out_buffer, //unsigned char *out
-	// 			out_size,	//size_t out_size
-	// 			buffer,		//const unsigned char *in
-	// 			1024);		//size_t inlen
+			//encryption
+			gcryErr = gcry_cipher_encrypt(
+				crypto,		//gcry_cipher_hd_t h
+				out_buffer, //unsigned char *out
+				out_size,	//size_t out_size
+				buffer,		//const unsigned char *in
+				1024);		//size_t inlen
 
-	// 		if (gcryErr)
-	// 		{
-	// 			printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
-	// 			return 1;
-	// 		}
-	// 		else
-	// 		{
-	// 			int sendret = send(sock, out_buffer, readret + 16, 0);
-	// 			if (sendret < 0)
-	// 			{
-	// 				perror("sent error in phrase 2");
-	// 			}
-	// 			else
-	// 			{
-	// 				printf("wrote %d bytes\n", sendret);
-	// 			}
+			if (gcryErr)
+			{
+				printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
+				return 1;
+			}
+			else
+			{
+				int sendret = send(sock, out_buffer, readret + 16, 0);
+				if (sendret < 0)
+				{
+					perror("sent error in phrase 2");
+				}
+				else
+				{
+					printf("wrote %d bytes\n", sendret);
+				}
 
-	// 			total_size += readret + 16;
-	// 		}
+				total_size += readret + 16;
+			}
 
-	// 	}
+		}
 
-	// 	//Tell decryption_side the transfer is done
-	// 	char trans_complete[] = "transmissioncompleted";
-	// 	send(sock, trans_complete, strlen(trans_complete), 0);
+		//Tell decryption_side the transfer is done
+		char trans_complete[] = "transmissioncompleted";
+		send(sock, trans_complete, strlen(trans_complete), 0);
 
-	// 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
-	// 	printf("transmitting to %s.\n", argv[3]);
-	// 	printf("successfully received.\n");
+		printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
+		printf("transmitting to %s.\n", argv[3]);
+		printf("successfully received.\n");
 
-	// 	close(sock);
-	// }
+		close(sock);
+	}
 
-	// //Close the file
-	// fclose(in);
-	// if (local_mode)
-	// {
-	// 	fclose(out);
-	// }
+	//Close the file
+	fclose(in);
+	if (local_mode)
+	{
+		fclose(out);
+	}
 
-	// //Close the crypto handler
-	// gcry_cipher_close(crypto);
+	//Close the crypto handler
+	gcry_cipher_close(crypto);
 
-	// //Free memory
-	// free(buffer);
+	//Free memory
+	free(buffer);
 }
