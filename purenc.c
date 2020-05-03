@@ -67,7 +67,7 @@ void initialize_handler(char *password, char *vector)
 
 	if (cryptoError)
 	{
-		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
 		exit(0);
 	}
 
@@ -75,7 +75,7 @@ void initialize_handler(char *password, char *vector)
 	cryptoError = gcry_cipher_setkey(crypto, key, key_len);
 	if (cryptoError)
 	{
-		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
 		exit(0);
 	}
 
@@ -86,7 +86,7 @@ void initialize_handler(char *password, char *vector)
 
 	if (cryptoError)
 	{
-		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
 		exit(0);
 	}
 }
