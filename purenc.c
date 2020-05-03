@@ -16,7 +16,9 @@ void gen_random(char *s, const int len)
 	static const char alphanum[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	srand(time(0));
 
-	for (int i = 0; i < len; ++i)
+	int i;
+
+	for (i = 0; i < len; ++i)
 	{
 		s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
 	}
@@ -204,7 +206,7 @@ int main(int argc, char *argv[])
 
 	if (local_mode)
 	{
-		while (readret = readret(buffer, 1, 1024, in))
+		while (readret = fread(buffer, 1, 1024, in))
 		{
 			//Buffer for encrypted data
 			size_t out_size = readret + 1024;
@@ -276,8 +278,8 @@ int main(int argc, char *argv[])
 		//connect
 		if (connect(sock, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
 		{
-			perror(stderr, "connect error");
-			return 1;
+			perror("connect error");
+			exit(0);
 		}
 
 		//send initlization vector
@@ -333,7 +335,7 @@ int main(int argc, char *argv[])
 
 	//Close the file
 	fclose(in);
-	if (local_mode_mode)
+	if (local_mode)
 	{
 		fclose(out);
 	}
