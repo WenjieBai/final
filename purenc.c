@@ -31,11 +31,10 @@ int main(int argc, char *argv[])
 	const int allow_debug_info = 0;
 
 	int local_mode;
-	char *file = malloc(20);
-	char *destFile = malloc(23);
+	char *filename = malloc(20);
+	char *filename_suffix = malloc(23);
 	char *argument = malloc(4);
-	char *dest = malloc(16);
-	int totalSent = 0;
+	int total_size = 0;
 	char *ip;
 	char *port;
 
@@ -47,7 +46,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		//Pull input file out of args
-		file = argv[1];
+		filename = argv[1];
 
 		//Pull argument
 		argument = argv[2];
@@ -56,9 +55,9 @@ int main(int argc, char *argv[])
 		local_mode = (!strcmp(argument, "-d")) ? 0 : 1;
 
 		//Get ip and port
-		char *combined = argv[3];
+		char *address = argv[3];
 
-		ip = strtok(combined, ":");
+		ip = strtok(address, ":");
 		port = strtok(NULL, ":");
 
 		if (allow_debug_info)
@@ -69,14 +68,14 @@ int main(int argc, char *argv[])
 		//Set new filename if local_mode mode
 		if (local_mode)
 		{
-			strcpy(destFile, file);
-			strcat(destFile, ".pur");
+			strcpy(filename_suffix, filename);
+			strcat(filename_suffix, ".pur");
 		}
 	}
 
-	//Prompt user for PW
-	char password[128];
-	printf("Password: ");
+	//enter password
+	char password[16];
+	printf("Input password: ");
 	fgets(password, sizeof password, stdin);
 
 	//Hash the PW
@@ -86,7 +85,7 @@ int main(int argc, char *argv[])
 	unsigned int saltLength = 32;
 
 	//Hash the Password
-	gcry_error_t cryptoError =
+	gcry_error_t gcryErr =
 		gcry_kdf_derive(
 			password,
 			strlen(password),
@@ -98,7 +97,7 @@ int main(int argc, char *argv[])
 			keyLength,
 			key);
 
-	if (cryptoError)
+	if (gcryErr)
 	{
 		printf("Error.\n");
 	}
@@ -110,16 +109,16 @@ int main(int argc, char *argv[])
 	//Create crypto handler
 	gcry_cipher_hd_t crypto;
 
-	cryptoError =
+	gcryErr =
 		gcry_cipher_open(
 			&crypto,
 			GCRY_CIPHER_AES256,
 			GCRY_CIPHER_MODE_ECB,
 			0);
 
-	if (cryptoError)
+	if (gcryErr)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
 		return 1;
 	}
 	else if (allow_debug_info)
@@ -130,10 +129,10 @@ int main(int argc, char *argv[])
 	/*
 	 *set cipher key
 	 */
-	cryptoError = gcry_cipher_setkey(crypto, key, keyLength);
-	if (cryptoError)
+	gcryErr = gcry_cipher_setkey(crypto, key, keyLength);
+	if (gcryErr)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
 		return 1;
 	}
 	else if (allow_debug_info)
@@ -141,18 +140,16 @@ int main(int argc, char *argv[])
 		printf("Key set.\n");
 	}
 
-	/*
-	 * Initialize the vector(???)
-	 */
-	char *vector = malloc(1024);
-	gen_random(vector, sizeof(vector));
+	// generate IV
 	size_t vector_len = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
-	cryptoError = gcry_cipher_setiv(crypto, vector, vector_len);
-	printf("vec len %d\n", vector_len);
+	char *vector = malloc(vector_len);
+	gen_random(vector, vector_len));
+	gcryErr = gcry_cipher_setiv(crypto, vector, vector_len);
+	// printf("vec len %d\n", vector_len);
 
-	if (cryptoError)
+	if (gcryErr)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
 		return 1;
 	}
 	else if (allow_debug_info)
@@ -165,17 +162,17 @@ int main(int argc, char *argv[])
 	FILE *out;
 
 	//Open the file
-	in = fopen(file, "r");
+	in = fopen(filename, "r");
 	if (local_mode)
 	{
-		if (out = fopen(destFile, "r"))
+		if (out = fopen(filename_suffix, "r"))
 		{
-			printf("File %s already exists. Exiting.\n", destFile);
+			printf("File %s already exists. Exiting.\n", filename_suffix);
 			return 1;
 		}
 		else
 		{
-			out = fopen(destFile, "w");
+			out = fopen(filename_suffix, "w");
 		}
 	}
 
@@ -213,16 +210,16 @@ int main(int argc, char *argv[])
 			char *out_buffer = malloc(readret + 1024);
 
 			//Encrypt the data
-			cryptoError = gcry_cipher_encrypt(
+			gcryErr = gcry_cipher_encrypt(
 				crypto,		//gcry_cipher_hd_t h
 				out_buffer, //unsigned char *out
 				out_size,	//size_t out_size
 				buffer,		//const unsigned char *in
 				1024);		//size_t inlen
 
-			if (cryptoError)
+			if (gcryErr)
 			{
-				printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+				printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
 				return 1;
 			}
 			else
@@ -278,57 +275,71 @@ int main(int argc, char *argv[])
 		//connect
 		if (connect(sock, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
 		{
-			perror("connect error");
+			perror("connect error\n");
 			exit(0);
 		}
 
-		//send initlization vector
+		//phrase 1: send initlization vector
 		int sendret = send(sock, vector, vector_len, 0);
-
-		//Recieve data
-		netInLength = recv(sock, netInBuffer, 1040, 0);
-		netInBuffer[netInLength] = '\0';
-
-		if (!strcmp(netInBuffer, "PWD"))
+		if (sendret < 0)
 		{
-			while (readret = fread(buffer, 1, 1024, in))
+			perror("phrase 1 error");
+		}
+
+		//phrase 2 send encrypted data
+		while (int readret = fread(buffer, 1, 1024, in))
+		{
+			if (readret < 0)
 			{
-				if (readret == 0)
-				{
-					printf("CRASHING\n");
-				}
-				//Buffer for encrypted data
-				size_t out_size = readret + 1024;
-				char *out_buffer = malloc(readret + 1024);
+				perror("read error\n");
+			}
+			else
+			{
+				printf("read %d bytes, ", readret);
+			}
 
-				//Encrypt the data
-				cryptoError = gcry_cipher_encrypt(
-					crypto,		//gcry_cipher_hd_t h
-					out_buffer, //unsigned char *out
-					out_size,	//size_t out_size
-					buffer,		//const unsigned char *in
-					1024);		//size_t inlen
+			//Buffer for encrypted data
+			size_t out_size = readret + 1024;
+			char *out_buffer = malloc(out_size);
 
-				if (cryptoError)
+			//encryption
+			gcryErr = gcry_cipher_encrypt(
+				crypto,		//gcry_cipher_hd_t h
+				out_buffer, //unsigned char *out
+				out_size,	//size_t out_size
+				buffer,		//const unsigned char *in
+				1024);		//size_t inlen
+
+			if (gcryErr)
+			{
+				printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
+				return 1;
+			}
+			else
+			{
+				int sendret = send(sock, out_buffer, readret + 16, 0);
+				if (sendret < 0)
 				{
-					printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
-					return 1;
+					perror("sent error in phrase 2")
 				}
 				else
 				{
-					send(sock, out_buffer, readret + 16, 0);
-					printf("Read %d bytes of data. Transmitting %i bytes of Data.\n", readret, readret + 16);
-					totalSent += readret + 16;
+					printf("wrote %d bytes\n", sendret);
 				}
 
-				//free(out_buffer);
+				total_size += readret + 16;
 			}
-			printf("Successfully transfered %d bytes.\n", totalSent);
 
-			//Tell server the transfer is done
-			char trans_complete[] = "transmissioncompleted";
-			send(sock, trans_complete, strlen(trans_complete), 0);
 		}
+		
+
+		//Tell server the transfer is done
+		char trans_complete[] = "transmissioncompleted";
+		send(sock, trans_complete, strlen(trans_complete), 0);
+
+		printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix total_size);
+		printf("transmitting to %s", argv[3]);
+		printf("successfully received");
 
 		close(sock);
 	}
