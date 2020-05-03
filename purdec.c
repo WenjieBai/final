@@ -15,6 +15,9 @@
 //Create crypto handler at global scope
 gcry_cipher_hd_t crypto;
 
+void localmode(char *argv);
+void distantmode(char *argv);
+
 int main(int argc, char *argv[])
 {
 
@@ -22,11 +25,11 @@ int main(int argc, char *argv[])
 	char *file_nosuffix = malloc(23);
 	char password[16]; //Need in high scope
 	FILE *out;		   //Always be used
-	int local_mode;	   //Mode designator
+	int mode;		   //Mode designator
 
 	if (argc > 3)
 	{
-		printf("\n\nUsage: uodec [-d] [-1 <input file>]\n");
+		printf("\n\nUsage: purdec [-d] [-1 <input file>]\n");
 		exit(0);
 	}
 	else
@@ -34,11 +37,11 @@ int main(int argc, char *argv[])
 		//Set proper mode
 		if (!strcmp(argv[1], "-l"))
 		{
-			local_mode = 1;
+			localmode(argv) :
 		}
 		else if (!strcmp(argv[1], "-d"))
 		{
-			local_mode = 0;
+			distantmode(argv);
 		}
 		else
 		{
@@ -46,94 +49,90 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-
-	if (local_mode)
-	{
-		//Get in file name from args
-		file = argv[2];
-
-		//Make sure the file is in the right .uo format
-		if (file[strlen(file) - 1] == 'o' && file[strlen(file) - 2] == 'u' && file[strlen(file) - 3] == '.')
-		{
-			strcpy(file_nosuffix, file);
-			file_nosuffix[strlen(file) - 1] = 0;
-			file_nosuffix[strlen(file) - 2] = 0;
-			file_nosuffix[strlen(file) - 3] = 0;
-		}
-		else
-		{
-			printf("\n\nIncorrect file format/extension.\n");
-		}
-	}
 }
 
-if (local_mode)
+// void localmode(char *argv)
+// {
+// 	printf("local mode\n");
+// 	//Get in file name from args
+// 	file = argv[2];
+
+// 	//Make sure the file is in the right .uo format
+// 	if (file[strlen(file) - 1] == 'o' && file[strlen(file) - 2] == 'u' && file[strlen(file) - 3] == '.')
+// 	{
+// 		strcpy(file_nosuffix, file);
+// 		file_nosuffix[strlen(file) - 1] = 0;
+// 		file_nosuffix[strlen(file) - 2] = 0;
+// 		file_nosuffix[strlen(file) - 3] = 0;
+// 	}
+// 	else
+// 	{
+// 		printf("\n\nIncorrect file format/extension.\n");
+// 	}
+
+// 	//Prompt user for PW
+// 	printf("Input password: ");
+// 	fgets(password, sizeof password, stdin);
+
+// 	if (crypt_init(password))
+// 	{
+// 		printf("Error configuring libgcrypt.\n");
+// 		return 1;
+// 	}
+
+// 	//Create file handler and file buffer
+// 	FILE *in;
+
+// 	//Open the file
+// 	in = fopen(file, "r");
+// 	out = fopen(file_nosuffix, "w");
+
+// 	//File opening error detection
+// 	if (in == NULL || out == NULL)
+// 	{
+// 		printf("Error opening ");
+// 		if (in == NULL)
+// 		{
+// 			printf("in");
+// 		}
+// 		if (out == NULL)
+// 		{
+// 			printf("out");
+// 		}
+// 		printf(" file.\n");
+// 	}
+
+
+// 	//decrypt the data from file
+// 	char *fileBuffer = malloc(2048);
+// 	int fRead;
+
+// 	while (fRead = fread(fileBuffer, 1, 1040, in))
+// 	{
+// 		//Buffer for unencrypted data
+// 		size_t unOutSize = 2048;
+// 		char *unOutBuffer = malloc(2048);
+
+// 		if (!decrypt(crypto, unOutBuffer, unOutSize, fileBuffer, 2048))
+// 		{
+// 			printf("Read %d bytes of data. Writing %i bytes of Data.\n", fRead, fRead - 16);
+// 			fwrite(unOutBuffer, fRead - 16, 1, out);
+// 		}
+
+// 		free(unOutBuffer);
+// 	}
+
+// 	//Close the file
+// 	fclose(in);
+// 	fclose(out);
+
+// 	//Free memory
+// 	free(fileBuffer);
+// }
+
+void distantmode(char *argv)
 {
-	//Prompt user for PW
-	printf("Input password: ");
-	fgets(password, sizeof password, stdin);
-
-	if (crypt_init(password))
-	{
-		printf("Error configuring libgcrypt.\n");
-		return 1;
-	}
-
-	//Create file handler and file buffer
-	FILE *in;
-
-	//Open the file
-	in = fopen(file, "r");
-	out = fopen(file_nosuffix, "w");
-
-	//File opening error detection
-	if (in == NULL || out == NULL)
-	{
-		printf("Error opening ");
-		if (in == NULL)
-		{
-			printf("in");
-		}
-		if (out == NULL)
-		{
-			printf("out");
-		}
-		printf(" file.\n");
-	}
-	else if (DEBUG)
-	{
-		printf("Files opened.\n");
-	}
-
-	//decrypt the data from file
-	char *fileBuffer = malloc(2048);
-	int fRead;
-
-	while (fRead = fread(fileBuffer, 1, 1040, in))
-	{
-		//Buffer for unencrypted data
-		size_t unOutSize = 2048;
-		char *unOutBuffer = malloc(2048);
-
-		if (!decrypt(crypto, unOutBuffer, unOutSize, fileBuffer, 2048))
-		{
-			printf("Read %d bytes of data. Writing %i bytes of Data.\n", fRead, fRead - 16);
-			fwrite(unOutBuffer, fRead - 16, 1, out);
-		}
-
-		free(unOutBuffer);
-	}
-
-	//Close the file
-	fclose(in);
-	fclose(out);
-
-	//Free memory
-	free(fileBuffer);
-}
-else
-{
-
+	printf("distant mode\n");
 	int port = atoi(argv[2]);
 
 	struct sockaddr_in encryption_side;
@@ -164,7 +163,7 @@ else
 		exit(0);
 	}
 
-	printf("listening...\n");
+	printf("waiting for connnection\n");
 
 	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
 	{
@@ -178,17 +177,30 @@ else
 
 	printf("connection from %s : %d", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
-	// phrase 1: receive IV
-	unsigned char *netInBuffer = malloc(1041);
+	// phrase 1: receive filename and IV
+
+	unsigned char[1040] buffer;
+	memset(buffer, 0, sizeof(buffer));
+
+	char *filename = malloc(20);
+	char *filename_suffix = malloc(23);
+
+	if(int recvret = recv(new_socketfd, filename_suffix, 16, 0) < 0)
+	{
+		perror("filename_suffix\n");
+	}
+	printf("file name %s\n"filename_suffix);
+
+
 	int netInLength;
 	int netOut;
 	int total = 0;
+
 	char *IV = malloc(16);
+	int recvret = recv(new_socketfd, IV, 16, 0);
+	IV[16] = '\0';
 
-	int recvret = recv(new_socketfd, IV, sizeof(IV), 0);
-	IV[netInLength] = '\0';
-
-	printf("Input password: ");
+	printf("Inbount file. Password: ");
 	fgets(password, sizeof password, stdin);
 
 	//Configure glib and file handler
@@ -206,22 +218,22 @@ else
 	//phrase 2: receive encrypted data
 	while (1)
 	{
-		netInLength = recv(new_socketfd, netInBuffer, 1040, 0);
-		netInBuffer[netInLength + 1] = '\0';
+		netInLength = recv(new_socketfd, buffer, 1040, 0);
+		buffer[netInLength + 1] = '\0';
 		if (DEBUG)
 		{
 			printf("-->Recieved %d bytes of Data\n", netInLength);
 		}
 		if (DEBUG)
 		{
-			printf("%s (%d bytes)\n", netInBuffer, netInLength);
+			printf("%s (%d bytes)\n", buffer, netInLength);
 		}
 
 		//dencrypt the data
 		size_t unOutSize = 2048;
 		unsigned char *unOutBuffer = malloc(2048);
 
-		if (netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, netInBuffer, 2048))
+		if (netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, buffer, 2048))
 		{
 			if (DEBUG)
 			{
