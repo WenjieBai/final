@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
 
 		if (sendret = send(sock, vector, vector_len, 0))
 		{
-			perror("IV\N");
+			perror("IV\n");
 		}
 
 		//phrase 2: send encrypted data
