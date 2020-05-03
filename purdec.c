@@ -373,5 +373,4 @@ int crypt_init(char *password, char *Init_vec)
 		printf("IV Set.\n");
 	}
 
-	return 0;
 }
