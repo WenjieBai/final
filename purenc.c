@@ -272,7 +272,7 @@ void distantmode(char *address, char *password)
 			crypto,		//gcry_cipher_hd_t h
 			out_buffer, //unsigned char *out
 			out_size,	//size_t out_size
-			buffer,		//const unsigned char *in
+			in_buffer,		//const unsigned char *in
 			1024);		//size_t inlen
 
 		if (gcryErr)
