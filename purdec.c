@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
 		}
 
 		//phrase 2: receive encrypted data
-		while (true)
+		while (1)
 		{
 			netInLength = recv(new_socketfd, netInBuffer, 1040, 0);
 			netInBuffer[netInLength + 1] = '\0';
