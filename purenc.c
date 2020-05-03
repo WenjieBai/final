@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
 {
 
 	int local_mode;
-	filename = molloc(20);
-    filename_suffix = molloc(23);	
+	filename = malloc(20);
+    filename_suffix = malloc(23);	
 	char *argument = malloc(4);
 
 	if (argc <= 2)
