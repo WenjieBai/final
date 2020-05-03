@@ -103,12 +103,10 @@ int decrypt(gcry_cipher_hd_t h, unsigned char *out, size_t outsize, unsigned cha
 int main(int argc, char *argv[])
 {
 
-	file = malloc(20);
-	file_suffix = malloc(23);
+	filename = malloc(20);
+	filename_suffix = malloc(23);
 	char password[16]; //Need in high scope
-	FILE *out;		   //Always be used
 
-	char password[16];
 	printf("Password: ");
 	fgets(password, sizeof password, stdin);
 
@@ -135,7 +133,7 @@ int main(int argc, char *argv[])
 		else if (!strcmp(argv[1], "-d"))
 		{
 			distant_mode = 1;
-			distantmode(argv[2]);
+			distantmode(argv[2], password);
 		}
 		else
 		{
@@ -152,8 +150,6 @@ void localmode(char *password)
 	// initialize crypto handler
 	char* vector= "InitializationVector";
   	initialize_handler(password, vector);
-
-
 
 	//Create file handler and file buffer
 	FILE *in;
@@ -188,7 +184,7 @@ void localmode(char *password)
 		size_t out_size = 2048;
 		char *out_buffer = malloc(2048);
 
-		if (!decrypt(crypto, out_buffer, out_size, buffer, 2048))
+		if (!decrypt(crypto, out_buffer, out_size, in_buffer, 2048))
 		{
 			printf("Read %d bytes of data. Writing %i bytes of Data.\n", freadret, freadret - 16);
 			fwrite(out_buffer, freadret - 16, 1, out);
