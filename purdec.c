@@ -11,7 +11,6 @@
 #include<sys/socket.h>
 
 #define DEBUG 0
-#define PORT 11169
 
 //Create crypto handler at global scope
 gcry_cipher_hd_t crypto;
@@ -37,7 +36,7 @@ int main(int argc, char * argv[]){
 			local = -1;
 		}
 		
-		//Exit if tag != -l or -n
+		//Exit if tag != -l or -d
 		if(local == -1){
 			printf("\n\nUsage: uodec [-n] [-1 <input file>]*\n");
 			return 1;
@@ -107,45 +106,43 @@ int main(int argc, char * argv[]){
 		//Free memory
 		free(fileBuffer);
 	}else{
+		int PORT = atoi(argv[2]);
 		if(DEBUG){printf("Configuring networking.\n");}
 		
-		//Create sockets structs
-		struct sockaddr_in client;
-		struct sockaddr_in server;
+		struct sockaddr_in enryption_side;
+		struct sockaddr_in decryption_side;
 		if(DEBUG){printf("Sockets structs created.\n");}
 		
-		//Create socket aand listener
-		int netSocket;		
-		int listener;
-		if(DEBUG){printf("netSocket and listener created.\n");}
+		//create socket aand new_socketfd
+		int sockfd;		
+		int new_socketfd;
+		if(DEBUG){printf("sockfd and listener created.\n");}
 		
 		//Set socketsize to struct size
 		socklen_t socketsize = sizeof(struct sockaddr_in);
 		if(DEBUG){printf("Sockets size set.\n");}
 		
 		//Set connection type
-		server.sin_family = AF_INET;
+		decryption_side.sin_family = AF_INET;
 		if(DEBUG){printf("Connection type set.\n");}
 		
-		//Bind to an interface
-		server.sin_addr.s_addr = INADDR_ANY;		
+
+		decryption_side.sin_addr.s_addr = INADDR_ANY;		
 		if(DEBUG){printf("Bound to interface.\n");}
-		
-		//Set portnumber
-		server.sin_port = htons(PORT);
+		decryption_side.sin_port = htons(PORT);
 		if(DEBUG){printf("Port number set.\n");}
 		
-		//Bind to socket
-		netSocket = socket(AF_INET, SOCK_STREAM, 0);
-		bind(netSocket, (struct sockaddr *)&server, sizeof(struct sockaddr));
+		//bind
+		sockfd = socket(AF_INET, SOCK_STREAM, 0);
+		bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(struct sockaddr));
 		if(DEBUG){printf("Bound to socket.\n");}
 		
 		//Start listening
-		listen(netSocket, 1);
+		listen(sockfd, 1);
 		printf("Waiting for connection.\n");
-		listener = accept(netSocket, (struct sockaddr *)&client, &socketsize);
+		new_socketfd = accept(sockfd, (struct sockaddr *)&enryption_side, &socketsize);
 		
-		if(listener == -1){printf("Error accepting connection");}
+		if(new_socketfd == -1){printf("Error accepting connection");}
 		
 		if(DEBUG){printf("Connection made.");}
 		
@@ -156,19 +153,19 @@ int main(int argc, char * argv[]){
 		int netOut;
 		int total = 0;
 		
-		while(listener){
+		while(new_socketfd){
 			if(mode == 0){
 				//Handshake on connection, just to be safe
 				if(DEBUG){printf("Incoming connection establed\n");};
 				char ack[] = "ACK";
-				send(listener, ack, strlen(ack), 0);				
+				send(new_socketfd, ack, strlen(ack), 0);				
 				if(DEBUG){printf("ACK Sent\n");}
 				mode = 1;
 			}
 			
 			if(mode == 1){
 				//Recieve data & add terminator
-				netInLength = recv(listener, destFile, 127, 0);
+				netInLength = recv(new_socketfd, destFile, 127, 0);
 				destFile[netInLength] = '\0';
 				
 				//More handshaking
@@ -189,7 +186,7 @@ int main(int argc, char * argv[]){
 				
 				//Send password ack
 				char pwd[] = "PWD";
-				send(listener, pwd, strlen(pwd), 0);
+				send(new_socketfd, pwd, strlen(pwd), 0);
 				if(DEBUG){printf("PWD ACK Sent. Waiting for data\n");}
 				mode = 2;
 
@@ -197,17 +194,18 @@ int main(int argc, char * argv[]){
 			
 			if(mode == 2){				
 				//Recieve data & add terminator
-				netInLength = recv(listener, netInBuffer, 1040, 0);
+				netInLength = recv(new_socketfd, netInBuffer, 1040, 0);
 				netInBuffer[netInLength+1] = '\0';
 				if(DEBUG){printf("-->Recieved %d bytes of Data\n", netInLength);}
 				if(DEBUG){printf("%s (%d bytes)\n", netInBuffer, netInLength);}
 				
-				//Unencrypt the data
+				//dencrypt the data
 				size_t unOutSize = 2048;
 				unsigned char * unOutBuffer = malloc(2048);
 
 
-				if(netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, netInBuffer, 2048)){
+				if(netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, netInBuffer, 2048))
+				{
 					if(DEBUG){printf("Decrypted.\n");}
 					if(netInLength < 1024){
 						unOutBuffer[netInLength-19] = '\0';
@@ -257,7 +255,7 @@ int decrypt(gcry_cipher_hd_t h, unsigned char *out, size_t outsize, unsigned cha
 	}
 }
 
-int crypt_init(char * password){
+int crypt_init(char * password, char * Init_vec){
 	char * key[32];
 	unsigned int keyLength = 32;
 	
@@ -307,12 +305,12 @@ int crypt_init(char * password){
 	}
 	
 	/*
-	 * Initialize the vector(???)
+	 * Initialize the vector
 	 */
 	char * vector = "athenstiromni"; //TODO: Random init vector;
 	size_t vLength = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
 	cryptoError =
-		gcry_cipher_setiv(crypto, vector, vLength);
+		gcry_cipher_setiv(crypto, init_vec, vLength);
 	
 	if(cryptoError){
 		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
