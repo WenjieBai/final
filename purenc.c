@@ -35,7 +35,7 @@ void gen_random(char *s, const int len)
 	s[len] = 0;
 }
 
-void initilize_handler(char *password, char *vector)
+void initialize_handler(char *password, char *vector)
 {
 	char *key[32];
 	unsigned int key_len = 32;
@@ -67,16 +67,16 @@ void initilize_handler(char *password, char *vector)
 
 	if (cryptoError)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
-		return 1;
+		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		exit(0);
 	}
 
 	//set cipher key
 	cryptoError = gcry_cipher_setkey(crypto, key, key_len);
 	if (cryptoError)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
-		return 1;
+		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		exit(0);
 	}
 
 	//set initialization vector
@@ -86,8 +86,8 @@ void initilize_handler(char *password, char *vector)
 
 	if (cryptoError)
 	{
-		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
-		return 1;
+		perror("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
+		exit(0);
 	}
 }
 
