@@ -200,50 +200,53 @@ int main(int argc, char *argv[])
 		}
 
 		//phrase 2: receive encrypted data
-		netInLength = recv(new_socketfd, netInBuffer, 1040, 0);
-		netInBuffer[netInLength + 1] = '\0';
-		if (DEBUG)
+		while (true)
 		{
-			printf("-->Recieved %d bytes of Data\n", netInLength);
-		}
-		if (DEBUG)
-		{
-			printf("%s (%d bytes)\n", netInBuffer, netInLength);
-		}
-
-		//dencrypt the data
-		size_t unOutSize = 2048;
-		unsigned char *unOutBuffer = malloc(2048);
-
-		if (netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, netInBuffer, 2048))
-		{
+			netInLength = recv(new_socketfd, netInBuffer, 1040, 0);
+			netInBuffer[netInLength + 1] = '\0';
 			if (DEBUG)
 			{
-				printf("Decrypted.\n");
+				printf("-->Recieved %d bytes of Data\n", netInLength);
 			}
+			if (DEBUG)
+			{
+				printf("%s (%d bytes)\n", netInBuffer, netInLength);
+			}
+
+			//dencrypt the data
+			size_t unOutSize = 2048;
+			unsigned char *unOutBuffer = malloc(2048);
+
+			if (netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, netInBuffer, 2048))
+			{
+				if (DEBUG)
+				{
+					printf("Decrypted.\n");
+				}
+				if (netInLength < 1024)
+				{
+					unOutBuffer[netInLength - 19] = '\0';
+					fwrite(unOutBuffer, netInLength - 19, 1, out);
+					netOut = netInLength - 19;
+				}
+				else
+				{
+					unOutBuffer[netInLength - 16] = '\0';
+					fwrite(unOutBuffer, netInLength - 16, 1, out);
+					netOut = netInLength - 16;
+				}
+				fflush(out);
+				printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", netInLength, netOut);
+				total += netOut;
+			}
+
+			free(unOutBuffer);
+
 			if (netInLength < 1024)
 			{
-				unOutBuffer[netInLength - 19] = '\0';
-				fwrite(unOutBuffer, netInLength - 19, 1, out);
-				netOut = netInLength - 19;
+				printf("Transfer successful. %d bytes written.\n", total);
+				break;
 			}
-			else
-			{
-				unOutBuffer[netInLength - 16] = '\0';
-				fwrite(unOutBuffer, netInLength - 16, 1, out);
-				netOut = netInLength - 16;
-			}
-			fflush(out);
-			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", netInLength, netOut);
-			total += netOut;
-		}
-
-		free(unOutBuffer);
-
-		if (netInLength < 1024)
-		{
-			printf("Transfer successful. %d bytes written.\n", total);
-			break;
 		}
 	}
 
