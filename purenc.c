@@ -233,72 +233,70 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		if (allow_debug_info)
-		{
-			printf("Configuring networking.\n");
-		}
+		distantmode();
+	}
+}
 
-		//Set incoming buffer & size
-		char netInBuffer[1041];
-		int netInLength;
-		if (allow_debug_info)
-		{
-			printf("Buffer created.\n");
-		}
+void distantmode()
+{
 
-		//Create socket
-		int sock;
-		if (allow_debug_info)
-		{
-			printf("Socket created.\n");
-		}
+	//Set incoming buffer & size
+	char netInBuffer[1041];
+	int netInLength;
+	if (allow_debug_info)
+	{
+		printf("Buffer created.\n");
+	}
 
-		//Create socket struct
-		struct sockaddr_in server;
-		if (allow_debug_info)
-		{
-			printf("Structs created.\n");
-		}
+	//Create socket
+	int sock;
 
-		//bind
-		sock = socket(AF_INET, SOCK_STREAM, 0);
-		if (allow_debug_info)
-		{
-			printf("Socket created.\n");
-		}
+	//Create socket struct
+	struct sockaddr_in server;
+	if (allow_debug_info)
+	{
+		printf("Structs created.\n");
+	}
 
-		//setup
-		server.sin_family = AF_INET;
-		server.sin_addr.s_addr = inet_addr(ip);
-		server.sin_port = htons(atoi(port));
+	//bind
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (allow_debug_info)
+	{
+		printf("Socket created.\n");
+	}
 
-		//connect
-		if (connect(sock, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
-		{
-			perror("connect error\n");
-			exit(0);
-		}
+	//setup
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = inet_addr(ip);
+	server.sin_port = htons(atoi(port));
 
-		//phrase 1: send filename and initlization vector
-		int sendret;
-		
-		if (sendret = send(sock, filename_suffix, 23, 0))
-		{
-			perror("file name\n");
-		}
+	//connect
+	if (connect(sock, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
+	{
+		perror("connect error\n");
+		exit(0);
+	}
 
-		if (sendret = send(sock, vector, vector_len, 0))
-		{
-			perror("IV\n");
-		}
+	//phrase 1: send filename and initlization vector
+	int sendret;
 
-		//phrase 2: send encrypted data
+	if (sendret = send(sock, filename_suffix, 23, 0))
+	{
+		perror("file name\n");
+	}
+
+	if (sendret = send(sock, vector, vector_len, 0))
+	{
+		perror("IV\n");
+	}
+
+	//phrase 2: send encrypted data
 	// 	int readret ;
 	// 	while ((readret = fread(buffer, 1, 1024, in)) > 0)
 	// 	{
-			
+
 	// 		printf("read %d bytes, ", readret);
-			
+
 	// 		//Buffer for encrypted data
 	// 		size_t out_size = readret + 1024;
 	// 		char *out_buffer = malloc(out_size);
@@ -332,7 +330,6 @@ int main(int argc, char *argv[])
 	// 		}
 
 	// 	}
-		
 
 	// 	//Tell server the transfer is done
 	// 	char trans_complete[] = "transmissioncompleted";
