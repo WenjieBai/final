@@ -12,8 +12,8 @@
 #include <time.h>
 
 gcry_cipher_hd_t crypto;
-char filename[20];
-char filename_suffix[23];
+char* filename;
+char* filename_suffix;
 
 void localmode(char* password);
 void distantmode(char* address, char* password);
@@ -33,7 +33,7 @@ void gen_random(char *s, const int len)
 	s[len] = 0;
 }
 
-void initilize_hd(char *password, char *vector = "InitializationVector")
+void initilize_handler(char *password, char *vector = "InitializationVector")
 {
 	char *key[32];
 	unsigned int key_len = 32;
@@ -97,7 +97,9 @@ int main(int argc, char *argv[])
 {
 
 	int local_mode;
-	char *argument = malloc(2);
+	filename = molloc(20);
+    filename_suffix = molloc(23);	
+	char *argument = malloc(4);
 
 	if (argc <= 2)
 	{
@@ -124,7 +126,7 @@ int main(int argc, char *argv[])
 
 	if (local_mode == 1)
 	{
-		localmode();
+		localmode(password);
 	}
 	else if (mode == 0)
 	{
@@ -146,7 +148,7 @@ void localmode(char *password)
 	if (out = fopen(filename_suffix, "r"))
 	{
 		printf("File %s already exists. Exiting.\n", filename_suffix);
-		return 1;
+		exit(0);
 	}
 	else
 	{
@@ -166,7 +168,7 @@ void localmode(char *password)
 			printf("out");
 		}
 		perror(" file.\n");
-		exit(1);
+		exit(0);
 	}
 
 	//Print file contents to another file
@@ -181,7 +183,7 @@ void localmode(char *password)
 		char *out_buffer = malloc(readret + 1024);
 
 		//encrypt data
-		gcryErr = gcry_cipher_encrypt(
+		gcry_error_t gcryErr = gcry_cipher_encrypt(
 			crypto,		//gcry_cipher_hd_t h
 			out_buffer, //unsigned char *out
 			out_size,	//size_t out_size
@@ -191,7 +193,7 @@ void localmode(char *password)
 		if (gcryErr)
 		{
 			printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
-			return 1;
+			exit(0);
 		}
 		else
 		{
