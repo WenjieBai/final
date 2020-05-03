@@ -12,13 +12,13 @@
 #include <time.h>
 
 gcry_cipher_hd_t crypto;
-char* filename;
-char* filename_suffix;
+char *filename;
+char *filename_suffix;
 int local_mode;
 int distant_mode;
 
-void localmode(char* password);
-void distantmode(char* address, char* password);
+void localmode(char *password);
+void distantmode(char *address, char *password);
 
 void gen_random(char *s, const int len)
 {
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 
 	int local_mode;
 	filename = malloc(20);
-    filename_suffix = malloc(23);	
+	filename_suffix = malloc(23);
 	char *argument = malloc(4);
 
 	if (argc <= 2)
@@ -122,8 +122,6 @@ int main(int argc, char *argv[])
 		{
 			distant_mode = 1;
 		}
-		
-		
 	}
 
 	//enter password
@@ -144,8 +142,8 @@ int main(int argc, char *argv[])
 void localmode(char *password)
 {
 	printf("local mode\n");
-	char* vector= "InitializationVector";
-  	initialize_handler(password, vector);
+	char *vector = "InitializationVector";
+	initialize_handler(password, vector);
 	//Create file handler and file buffer
 	FILE *in;
 	FILE *out;
@@ -219,19 +217,13 @@ void distantmode(char *address, char *password)
 	gen_random(vector, vector_len);
 	initialize_handler(password, vector);
 
-
 	char *ip = strtok(address, ":");
 	char *port = strtok(NULL, ":");
 	printf("ip: %s port: %d\n", ip, atoi(port));
 
-	//Set incoming buffer & size
-	char netInBuffer[1041];
-	int netInLength;
-
 	//Create socket struct
 	struct sockaddr_in decryption_side;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
-
 
 	//setup
 	decryption_side.sin_family = AF_INET;
@@ -259,67 +251,71 @@ void distantmode(char *address, char *password)
 	}
 
 	//phrase 2: send encrypted data
-		int readret ;
-		while ((readret = fread(buffer, 1, 1024, in)) > 0)
+	FILE *in;
+	in = fopen(filename, "r");
+	char in_buffer[1040];
+
+	int readret;
+
+	while ((readret = fread(buffer, 1, 1024, in)) > 0)
+	{
+
+		printf("read %d bytes, ", readret);
+
+		//Buffer for encrypted data
+		size_t out_size = readret + 1024;
+		char *out_buffer = malloc(out_size);
+
+		//encryption
+		gcryErr = gcry_cipher_encrypt(
+			crypto,		//gcry_cipher_hd_t h
+			out_buffer, //unsigned char *out
+			out_size,	//size_t out_size
+			buffer,		//const unsigned char *in
+			1024);		//size_t inlen
+
+		if (gcryErr)
 		{
-
-			printf("read %d bytes, ", readret);
-
-			//Buffer for encrypted data
-			size_t out_size = readret + 1024;
-			char *out_buffer = malloc(out_size);
-
-			//encryption
-			gcryErr = gcry_cipher_encrypt(
-				crypto,		//gcry_cipher_hd_t h
-				out_buffer, //unsigned char *out
-				out_size,	//size_t out_size
-				buffer,		//const unsigned char *in
-				1024);		//size_t inlen
-
-			if (gcryErr)
+			printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
+			return 1;
+		}
+		else
+		{
+			int sendret = send(sock, out_buffer, readret + 16, 0);
+			if (sendret < 0)
 			{
-				printf("%s: %s\n", gcry_strsource(gcryErr), gcry_strerror(gcryErr));
-				return 1;
+				perror("sent error in phrase 2");
 			}
 			else
 			{
-				int sendret = send(sock, out_buffer, readret + 16, 0);
-				if (sendret < 0)
-				{
-					perror("sent error in phrase 2");
-				}
-				else
-				{
-					printf("wrote %d bytes\n", sendret);
-				}
-
-				total_size += readret + 16;
+				printf("wrote %d bytes\n", sendret);
 			}
 
+			total_size += readret + 16;
 		}
-
-		//Tell decryption_side the transfer is done
-		char trans_complete[] = "transmissioncompleted";
-		send(sock, trans_complete, strlen(trans_complete), 0);
-
-		printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
-		printf("transmitting to %s.\n", argv[3]);
-		printf("successfully received.\n");
-
-		close(sock);
 	}
 
-	//Close the file
-	fclose(in);
-	if (local_mode)
-	{
-		fclose(out);
-	}
+	//Tell decryption_side the transfer is done
+	char trans_complete[] = "transmissioncompleted";
+	send(sock, trans_complete, strlen(trans_complete), 0);
 
-	//Close the crypto handler
-	gcry_cipher_close(crypto);
+	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
+	printf("transmitting to %s.\n", argv[3]);
+	printf("successfully received.\n");
 
-	//Free memory
-	free(buffer);
+	close(sock);
+}
+
+//Close the file
+fclose(in);
+if (local_mode)
+{
+	fclose(out);
+}
+
+//Close the crypto handler
+gcry_cipher_close(crypto);
+
+//Free memory
+free(buffer);
 }
