@@ -14,6 +14,8 @@
 gcry_cipher_hd_t crypto;
 char* filename;
 char* filename_suffix;
+int local_mode;
+int distant_mode;
 
 void localmode(char* password);
 void distantmode(char* address, char* password);
@@ -33,7 +35,7 @@ void gen_random(char *s, const int len)
 	s[len] = 0;
 }
 
-void initilize_handler(char *password, char *vector = "InitializationVector")
+void initilize_handler(char *password, char *vector)
 {
 	char *key[32];
 	unsigned int key_len = 32;
@@ -76,10 +78,6 @@ void initilize_handler(char *password, char *vector = "InitializationVector")
 		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
 		return 1;
 	}
-	else if (DEBUG)
-	{
-		printf("Key set.\n");
-	}
 
 	//set initialization vector
 	size_t vector_len = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
@@ -115,8 +113,17 @@ int main(int argc, char *argv[])
 
 		argument = argv[2];
 
-		//Set proper mode
-		local_mode = (!strcmp(argument, "-d")) ? 0 : 1;
+		// set mode
+		if (strcmp(argument, "-l") == 0)
+		{
+			local_mode = 1;
+		}
+		if (strcmp(argument, "-l") == 0)
+		{
+			distant_mode = 1;
+		}
+		
+		
 	}
 
 	//enter password
@@ -128,7 +135,7 @@ int main(int argc, char *argv[])
 	{
 		localmode(password);
 	}
-	else if (mode == 0)
+	if (distant_mode == 0)
 	{
 		distantmode(argv[3], password);
 	}
@@ -137,7 +144,8 @@ int main(int argc, char *argv[])
 void localmode(char *password)
 {
 	printf("local mode\n");
-  	initialize_handler(password);
+	char* vector= "InitializationVector";
+  	initialize_handler(password, vector);
 	//Create file handler and file buffer
 	FILE *in;
 	FILE *out;
