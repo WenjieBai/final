@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
 		int netInLength;
 		int netOut;
 		int total = 0;
-		char *IV = molloc(16);
+		char *IV = malloc(16);
 
 		int recvret = recv(new_socketfd, IV, sizeof(IV), 0);
 		IV[netInLength] = '\0';
