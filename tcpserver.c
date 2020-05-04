@@ -90,9 +90,10 @@ int main()
 	// func(connfd); 
 
     char buff[MAX]; 
+    bzero(buff, MAX);
     read(sockfd, buff, sizeof(buff)); 
     // print buffer which contains the client contents 
-    printf("From client: %s\t : ", buff); 
+    printf("From client: %s: \n", buff); 
 
 	// After chatting close the socket 
 	close(sockfd); 
