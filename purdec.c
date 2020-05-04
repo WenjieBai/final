@@ -201,145 +201,137 @@ void localmode(char *password)
 	free(in_buffer);
 }
 
-// void distantmode(char *argv)
-// {
-// 	printf("distant mode\n");
-// 	int port = atoi(argv[2]);
+void distantmode(char *port, char *password)
+{
+	printf("distant mode\n");
 
-// 	struct sockaddr_in encryption_side;
-// 	struct sockaddr_in decryption_side;
-// 	socklen_t enc_len = sizeof(struct sockaddr_in);
 
-// 	//create socket aand new_socketfd
-// 	int sockfd;
-// 	int new_socketfd;
+	struct sockaddr_in encryption_side;
+	struct sockaddr_in decryption_side;
+	socklen_t enc_len = sizeof(struct sockaddr_in);
 
-// 	//setup
-// 	decryption_side.sin_family = AF_INET;
-// 	decryption_side.sin_addr.s_addr = INADDR_ANY;
-// 	decryption_side.sin_port = htons(port);
+	//create socket aand new_socketfd
+	int sockfd;
+	int new_socketfd;
 
-// 	//bind
-// 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-// 	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(struct sockaddr)) < 0)
-// 	{
-// 		perror("bind error\n");
-// 		exit(0);
-// 	}
+	//setup
+	decryption_side.sin_family = AF_INET;
+	decryption_side.sin_addr.s_addr = INADDR_ANY;
+	decryption_side.sin_port = htons(port);
 
-// 	//listen
-// 	if (listen(sockfd, 1) < 0)
-// 	{
-// 		perror("listen error");
-// 		exit(0);
-// 	}
+	//bind
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(struct sockaddr)) < 0)
+	{
+		perror("bind error\n");
+		exit(0);
+	}
 
-// 	printf("waiting for connnection\n");
+	//listen
+	if (listen(sockfd, 1) < 0)
+	{
+		perror("listen error");
+		exit(0);
+	}
 
-// 	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
-// 	{
-// 		perror("accept error");
-// 		exit(0);
-// 	}
-// 	if (getsockname(new_sockfd, (struct sockaddr *)&encryption_side, &enc_len) == -1)
-// 	{
-// 		perror("getsockname error\n");
-// 	}
+	printf("waiting for connnection\n");
 
-// 	printf("connection from %s : %d", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
+	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
+	{
+		perror("accept error");
+		exit(0);
+	}
+	if (getsockname(new_sockfd, (struct sockaddr *)&encryption_side, &enc_len) == -1)
+	{
+		perror("getsockname error\n");
+	}
 
-// 	// phrase 1: receive filename and IV
+	printf("connection from %s : %d", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
-// 	unsigned char[1040] buffer;
-// 	memset(buffer, 0, sizeof(buffer));
+	// phrase 1: receive filename and IV
 
-// 	char *filename = malloc(20);
-// 	char *filename_suffix = malloc(23);
+	unsigned char[1040] buffer;
+	memset(buffer, 0, sizeof(buffer));
 
-// 	if(int recvret = recv(new_socketfd, filename_suffix, 16, 0) < 0)
-// 	{
-// 		perror("filename_suffix\n");
-// 	}
-// 	printf("file name %s\n"filename_suffix);
+	char *filename = malloc(20);;
+	int recvret;
+	if(recvret = recv(new_socketfd, filename, 20, 0) < 0)
+	{
+		perror("filename\n");
+	}
+	printf("file name %s\n"filename);
 
-// 	int netInLength;
-// 	int netOut;
-// 	int total = 0;
 
-// 	char *IV = malloc(16);
-// 	int recvret = recv(new_socketfd, IV, 16, 0);
-// 	IV[16] = '\0';
+	char *IV = malloc(16);
+	if((recvret = recv(new_socketfd, IV, 16, 0)) < 0)
+	{
+		perror("recv iv.\n");
+	}
+	IV[16] = '\0';
 
-// 	printf("Inbount file. Password: ");
-// 	fgets(password, sizeof password, stdin);
+	//Configure glib and file handler
+	crypt_init(password, IV);
 
-// 	//Configure glib and file handler
-// 	crypt_init(password, IV);
-// 	if (out = fopen(file_nosuffix, "r"))
-// 	{
-// 		printf("File %s already exists. Exiting.\n", file_nosuffix);
-// 		return 1;
-// 	}
-// 	else
-// 	{
-// 		out = fopen(file_nosuffix, "w");
-// 	}
+	FILE *out;
+	if (out = fopen(filename, "r"))
+	{
+		printf("File %s already exists. Exiting.\n", filename);
+		return 1;
+	}
+	else
+	{
+		out = fopen(filename, "w");
+	}
 
-// 	//phrase 2: receive encrypted data
-// 	while (1)
-// 	{
-// 		netInLength = recv(new_socketfd, buffer, 1040, 0);
-// 		buffer[netInLength + 1] = '\0';
-// 		if (DEBUG)
-// 		{
-// 			printf("-->Recieved %d bytes of Data\n", netInLength);
-// 		}
-// 		if (DEBUG)
-// 		{
-// 			printf("%s (%d bytes)\n", buffer, netInLength);
-// 		}
+	//phrase 2: receive encrypted data
+	char * in_buffer = malloc(2048);
+	int filesize = 0;
+	int writesize = 0;
+	while (1)
+	{
+		recvret = recv(new_socketfd, in_buffer, 1040, 0);
+		in_buffer[recvret] = '\0';
 
-// 		//dencrypt the data
-// 		size_t unOutSize = 2048;
-// 		unsigned char *unOutBuffer = malloc(2048);
+		//dencrypt the data
+		size_t out_size = 2048;
+		unsigned char *out_buffer = malloc(2048);
 
-// 		if (netInLength > 0 && !decrypt(crypto, unOutBuffer, unOutSize, buffer, 2048))
-// 		{
-// 			if (DEBUG)
-// 			{
-// 				printf("Decrypted.\n");
-// 			}
-// 			if (netInLength < 1024)
-// 			{
-// 				unOutBuffer[netInLength - 19] = '\0';
-// 				fwrite(unOutBuffer, netInLength - 19, 1, out);
-// 				netOut = netInLength - 19;
-// 			}
-// 			else
-// 			{
-// 				unOutBuffer[netInLength - 16] = '\0';
-// 				fwrite(unOutBuffer, netInLength - 16, 1, out);
-// 				netOut = netInLength - 16;
-// 			}
-// 			fflush(out);
-// 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", netInLength, netOut);
-// 			total += netOut;
-// 		}
+		if (recvret > 0 && !decrypt(crypto, out_buffer, out_size, in_buffer, 2048))
+		{
 
-// 		free(unOutBuffer);
+			if (recvret < 1024)
+			{
+				out_buffer[recvret - 19] = '\0';
+				fwrite(out_buffer, recvret - 19, 1, out);
+				writesize += recvret - 19;
+			}
+			else
+			{
+				out_buffer[recvret - 16] = '\0';
+				fwrite(out_size, recvret - 16, 1, out);
+				writesize += recvret - 16;
+			}
+			fflush(out);
+			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
+			filesize += writesize;
+		}
 
-// 		if (netInLength < 1024)
-// 		{
-// 			printf("Transfer successful. %d bytes written.\n", total);
-// 			break;
-// 		}
-// 	}
-// }
+		free(out_buffer);
 
-//Close the crypto handler
-// gcry_cipher_close(crypto);
+		char *trans_complete = "transmissioncompleted";
+		if (strcmp(in_buffer,trans_complete) == 0)
+		{
+			printf("Transmission completed");
+			break;
+		}
 
-// return 0;
-// }
+		memset(in_buffer, 0, 1040);
+	}
+}
+
+// Close the crypto handler
+gcry_cipher_close(crypto);
+
+}
 
 

@@ -241,7 +241,7 @@ void distantmode(char *address, char *password)
 	//phrase 1: send filename and initlization vector
 	int sendret;
 
-	if (sendret = send(sock, filename_suffix, 23, 0) < 0)
+	if (sendret = send(sock, filename, 20, 0) < 0)
 	{
 		perror("file name\n");
 	}
@@ -254,7 +254,7 @@ void distantmode(char *address, char *password)
 	//phrase 2: send encrypted data
 	FILE *in;
 	in = fopen(filename, "r");
-	char in_buffer[1040];
+	char *in_buffer = malloc(1040);
 
 	int readret;
 
@@ -296,8 +296,9 @@ void distantmode(char *address, char *password)
 		}
 	}
 
-	//Tell decryption_side the transfer is done
-	char trans_complete[] = "transmissioncompleted";
+	
+	//phrase 3: end of transmission
+	char *trans_complete = "transmissioncompleted";
 	send(sock, trans_complete, strlen(trans_complete), 0);
 
 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
