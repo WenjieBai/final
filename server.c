@@ -57,10 +57,11 @@ int main()
 	fprintf(stderr, "new sock %d", new_sock);
 
 
-	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
+	printf("connection from %s : %s\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	char buffer[1040];
 	memset(buffer, 0, sizeof(buffer));
+    
 	int readret = read(new_sock, buffer, 1040);
     fprintf(stderr,"buffer %s\n", buffer);
     fprintf(stderr, "readret %d", readret);
