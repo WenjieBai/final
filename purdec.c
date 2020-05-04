@@ -258,7 +258,7 @@ void distantmode(char *port, char *password)
 		printf("connfd %d", connfd);
 	}
 
-	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
+	printf("connection from %s : %d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
 	char buffer[1040];
 	memset(buffer, 0, sizeof(buffer));
