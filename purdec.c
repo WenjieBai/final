@@ -260,18 +260,9 @@ void distantmode(char *port, char *password)
 
 	printf("connection from %s : %d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-	char buffer[1040];
-	memset(buffer, 0, sizeof(buffer));
-	int readret = read(connfd, buffer, 1040);
-	fprintf(stderr, "%d", readret);
-	fprintf(stderr, "%s", buffer);
-
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
 	int recvret;
-	int ret = read(connfd, buffer, 4);
-	fprintf(stderr, "buffer %s\n", buffer);
-	fprintf(stderr, "ret %d", ret);
 
 	if (recvret = read(connfd, filename, 20) < 0)
 	{
@@ -287,7 +278,13 @@ void distantmode(char *port, char *password)
 	{
 		perror("recv iv error.\n");
 	}
-	IV[16] = '\0';
+	else
+	{
+		IV[16] = '\0';
+		printf("IV %s", IV);
+	}
+	
+	
 
 	//Configure glib and file handler
 	initialize_handler(password, IV);
