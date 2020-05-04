@@ -217,7 +217,7 @@ void distantmode(char *port, char *password)
 	//setup
 	decryption_side.sin_family = AF_INET;
 	decryption_side.sin_addr.s_addr = INADDR_ANY;
-	decryption_side.sin_port = htons(port);
+	decryption_side.sin_port = htons(atoi(port));
 
 	//bind
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
