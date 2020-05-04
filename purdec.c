@@ -206,26 +206,45 @@ void distantmode(char *port, char *password)
 	printf("distant mode\n");
 
 
-	struct sockaddr_in encryption_side;
-	struct sockaddr_in decryption_side;
-	socklen_t enc_len = sizeof(struct sockaddr_in);
-
 	//create socket aand new_socketfd
 	int sockfd;
 	int new_socketfd;
 
-	//setup
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	{
+		perror("socket failed");
+		exit(EXIT_FAILURE);
+	}
+
+	struct sockaddr_in encryption_side;
+	struct sockaddr_in decryption_side;
+	socklen_t dec_len = sizeof(decryption_side);
+
+	memset(&decryption_side, 0, sizeof(decryption_side));
+
+
+
+	//populate address
 	decryption_side.sin_family = AF_INET;
 	decryption_side.sin_addr.s_addr = INADDR_ANY;
 	decryption_side.sin_port = htons(atoi(port));
 
 	//bind
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(struct sockaddr)) < 0)
+	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) < 0)
 	{
 		perror("bind error\n");
 		exit(0);
 	}
+
+	// print port number
+    if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
+        perror("getsockname");
+    else
+    {
+        fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
+        fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
+    }
+
 
 	//listen
 	if (listen(sockfd, 3) < 0)
@@ -236,7 +255,7 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
+	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&dec_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
@@ -252,6 +271,7 @@ void distantmode(char *port, char *password)
 	int ret = recv(new_socketfd, bu, 4, 0);
 	fprintf(stderr,"bu %s\n", bu);
 	fprintf(stderr,"ret %d", ret);
+
 	if(recvret = read(new_socketfd, filename, 20) < 0)
 	{
 		perror("filename error\n");
