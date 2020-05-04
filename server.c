@@ -59,7 +59,7 @@ int main()
         }
 
 	// Function for chatting between encryption_sideent and decryption_side 
-    char buff[MAX]; 
+    char buff[80]; 
     read(sockfd, buff, sizeof(buff));
 
 	// After chatting close the socket 
