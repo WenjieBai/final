@@ -59,7 +59,8 @@ int main()
 	// func(sockfd); 
     
     char *buff = "qq ni l "; 
-    int ret = write(sockfd, buff, strlen(buff));  
+    int ret = write(sockfd, buff, 8);
+    fprintf(stderr,"%s", buff);  
     fprintf(stderr,"%d", ret);
 	// close the socket 
 	close(sockfd); 
