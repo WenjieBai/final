@@ -246,8 +246,11 @@ void distantmode(char *port, char *password)
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	// phrase 1: receive filename and IV
-	char *filename = malloc(20);;
+	char *filename = malloc(20);
+	char bu[4]
 	int recvret;
+	recvret = read(new_socketfd, bu, 4);
+	printf("bu %s\n", bu);
 	if(recvret = read(new_socketfd, filename, 20) < 0)
 	{
 		perror("filename error\n");
