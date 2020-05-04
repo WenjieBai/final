@@ -341,7 +341,7 @@ void distantmode(char *port, char *password)
 		// 	printf("Transmission completed");
 		// 	break;
 		// }
-		if (readret < 1040)
+		if (recvret < 1040)
 		{
 			break;
 		}
