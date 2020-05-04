@@ -250,8 +250,8 @@ void distantmode(char *port, char *password)
 	char bu[4];
 	int recvret;
 	int ret = recv(new_socketfd, bu, 4, 0);
-	printf("bu %s\n", bu);
-	printf("ret %d", ret);
+	fprintf(stderr,"bu %s\n", bu);
+	fprintf(stderr,"ret %d", ret);
 	if(recvret = read(new_socketfd, filename, 20) < 0)
 	{
 		perror("filename error\n");
