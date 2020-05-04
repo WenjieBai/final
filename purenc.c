@@ -225,8 +225,16 @@ void distantmode(char *address, char *password)
 	//create socket struct
 	struct sockaddr_in server;
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1)
+	{
+		printf("socket creation failed...\n");
+		exit(0);
+	}
+	else
+		printf("Socket successfully created..\n");
 
 	//setup
+	memset(&server, 0, sizeof(server));
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = inet_addr(ip);
 	server.sin_port = htons(atoi(port));
@@ -252,7 +260,6 @@ void distantmode(char *address, char *password)
 	// {
 	// 	printf("file name %s, sendret %d\n", filename, sendret);
 	// }
-	
 
 	if (sendret = send(sockfd, vector, vector_len, 0) < 0)
 	{
@@ -281,7 +288,7 @@ void distantmode(char *address, char *password)
 			crypto,		//gcry_cipher_hd_t h
 			out_buffer, //unsigned char *out
 			out_size,	//size_t out_size
-			in_buffer,		//const unsigned char *in
+			in_buffer,	//const unsigned char *in
 			1024);		//size_t inlen
 
 		if (gcryErr)
@@ -306,7 +313,6 @@ void distantmode(char *address, char *password)
 		}
 	}
 
-	
 	//phrase 3: end of transmission
 	char *trans_complete = "transmissioncompleted";
 	send(sockfd, trans_complete, strlen(trans_complete), 0);
@@ -323,6 +329,4 @@ void distantmode(char *address, char *password)
 
 	//Close the crypto handler
 	gcry_cipher_close(crypto);
-
-	
 }
