@@ -324,7 +324,7 @@ void distantmode(char *port, char *password)
 		memset(in_buffer, 0, 1040);
 	}
 
-	fclose(in);
+	fclose(out);
 	free(in_buffer);
 	gcry_cipher_close(crypto);
 }
