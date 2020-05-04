@@ -269,11 +269,11 @@ void distantmode(char *port, char *password)
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
 	int recvret;
-	int ret = read(new_sock, buffer, 4);
+	int ret = read(connfd, buffer, 4);
 	fprintf(stderr, "buffer %s\n", buffer);
 	fprintf(stderr, "ret %d", ret);
 
-	if (recvret = read(new_sock, filename, 20) < 0)
+	if (recvret = read(connfd, filename, 20) < 0)
 	{
 		perror("filename error\n");
 	}
@@ -283,7 +283,7 @@ void distantmode(char *port, char *password)
 	}
 
 	char *IV = malloc(16);
-	if ((recvret = recv(new_sock, IV, 16, 0)) < 0)
+	if ((recvret = recv(connfd, IV, 16, 0)) < 0)
 	{
 		perror("recv iv error.\n");
 	}
@@ -309,7 +309,7 @@ void distantmode(char *port, char *password)
 	int writesize = 0;
 	while (1)
 	{
-		recvret = recv(new_sock, in_buffer, 1040, 0);
+		recvret = recv(connfd, in_buffer, 1040, 0);
 		in_buffer[recvret] = '\0';
 
 		//dencrypt the data
