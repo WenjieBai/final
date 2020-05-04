@@ -216,6 +216,7 @@ void distantmode(char *address, char *password)
 	size_t vector_len = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
 	char *vector = malloc(vector_len);
 	gen_random(vector, vector_len);
+	printf("iv %s", vector);
 	initialize_handler(password, vector);
 
 	char *ip = strtok(address, ":");
@@ -247,18 +248,18 @@ void distantmode(char *address, char *password)
 	}
 
 	//phrase 1: send filename and initlization vector
-	int sendret;
-	if (sendret = send(sockfd, filename, strlen(filename), 0) <= 0)
+	int writeret;
+	if (ret = write(sockfd, filename, 20) <= 0)
 	{
 		perror("file name\n");
 		error(0);
 	}
 	else
 	{
-		printf("file name %s, sendret %d\n", filename, sendret);
+		printf("file name %s, writeret %d\n", filename, writeret);
 	}
 
-	if (sendret = send(sockfd, vector, vector_len, 0) < 0)
+	if (writeret = write(sockfd, vector, vector_len) < 0)
 	{
 		perror("IV error\n");
 		exit(0);
@@ -295,15 +296,15 @@ void distantmode(char *address, char *password)
 		}
 		else
 		{
-			sendret = send(sockfd, out_buffer, readret + 16, 0);
-			if (sendret <= 0)
+			writeret = send(sockfd, out_buffer, readret + 16, 0);
+			if (writeret <= 0)
 			{
 				perror("sent error in phrase 2");
 				exit(0);
 			}
 			else
 			{
-				printf("wrote %d bytes\n", sendret);
+				printf("wrote %d bytes\n", writeret);
 			}
 
 			total_size += readret + 16;
