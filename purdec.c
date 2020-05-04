@@ -220,6 +220,7 @@ void distantmode(char *port, char *password)
 	struct sockaddr_in decryption_side;
 
 	socklen_t enc_len = sizeof(encryption_side);
+	socklen_t dec_len = sizeof(decryption_side);
 
 	memset(&decryption_side, 0, sizeof(decryption_side));
 
@@ -236,13 +237,13 @@ void distantmode(char *port, char *password)
 	}
 
 	// // print port number
-    // if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
-    //     perror("getsockname");
-    // else
-    // {
-    //     fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
-    //     fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
-    // }
+    if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
+        perror("getsockname");
+    else
+    {
+        fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
+        fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
+    }
 
 
 	//listen
