@@ -266,7 +266,7 @@ void distantmode(char *port, char *password)
 	IV[16] = '\0';
 
 	//Configure glib and file handler
-	initialize_handler(password, vector);
+	initialize_handler(password,  IV);
 
 	FILE *out;
 	if (out = fopen(filename, "r"))
