@@ -248,7 +248,7 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_sock = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
+	if (new_sock = accept(sockfd, (struct sockaddr *)&decryption_side, &dec_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
@@ -256,7 +256,7 @@ void distantmode(char *port, char *password)
 	fprintf(stderr, "new sock %d", new_sock);
 
 
-	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
+	// printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
