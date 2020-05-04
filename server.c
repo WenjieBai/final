@@ -11,7 +11,7 @@
 int main() 
 { 
 	int sockfd, connfd, len; 
-	struct sockaddr_in servaddr, encryption_side; 
+	struct sockaddr_in decryption_side, encryption_side; 
 
 	// socket create and verification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -21,15 +21,15 @@ int main()
 	} 
 	else
 		printf("Socket successfully created..\n"); 
-	bzero(&servaddr, sizeof(servaddr)); 
+	bzero(&decryption_side, sizeof(decryption_side)); 
 
 	// assign IP, PORT 
-	servaddr.sin_family = AF_INET; 
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
-	servaddr.sin_port = htons(PORT); 
+	decryption_side.sin_family = AF_INET; 
+	decryption_side.sin_addr.s_addr = htonl(INADDR_ANY); 
+	decryption_side.sin_port = htons(PORT); 
 
 	// Binding newly created socket to given IP and verification 
-	if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) { 
+	if ((bind(sockfd, (SA*)&decryption_side, sizeof(decryption_side))) != 0) { 
 		printf("socket bind failed...\n"); 
 		exit(0); 
 	} 
@@ -59,6 +59,7 @@ int main()
         }
 
 	// Function for chatting between encryption_sideent and decryption_side 
+    char buff[MAX]; 
     read(sockfd, buff, sizeof(buff));
 
 	// After chatting close the socket 
