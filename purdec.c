@@ -247,7 +247,7 @@ void distantmode(char *port, char *password)
 
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
-	char bu[4]
+	char bu[4];
 	int recvret;
 	recvret = read(new_socketfd, bu, 4);
 	printf("bu %s\n", bu);
