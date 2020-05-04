@@ -224,7 +224,7 @@ void distantmode(char *port, char *password)
 	// assign IP, PORT
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
-	server.sin_port = htons(port);
+	server.sin_port = htons(atoi(port));
 
 	// Binding newly created socket to given IP and verification
 	if ((bind(sockfd, (struct sockaddr *)&server, sizeof(server))) != 0)
