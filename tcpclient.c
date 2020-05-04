@@ -21,7 +21,7 @@ void func(int sockfd)
 		read(sockfd, buff, sizeof(buff)); 
 		printf("From Server : %s", buff); 
 		if ((strncmp(buff, "exit", 4)) == 0) { 
-			printf("Client Exit...\n"); 
+			printf("encryption_sideent Exit...\n"); 
 			break; 
 		} 
 	} 
@@ -30,7 +30,7 @@ void func(int sockfd)
 int main() 
 { 
 	int sockfd, connfd; 
-	struct sockaddr_in servaddr, cli; 
+	struct sockaddr_in decryption_side, encryption_side; 
 
 	// socket create and varification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -40,15 +40,15 @@ int main()
 	} 
 	else
 		printf("Socket successfully created..\n"); 
-	bzero(&servaddr, sizeof(servaddr)); 
+	bzero(&decryption_side, sizeof(decryption_side)); 
 
 	// assign IP, PORT 
-	servaddr.sin_family = AF_INET; 
-	servaddr.sin_addr.s_addr = inet_addr("192.168.15.5"); 
-	servaddr.sin_port = htons(PORT); 
+	decryption_side.sin_family = AF_INET; 
+	decryption_side.sin_addr.s_addr = inet_addr("192.168.15.5"); 
+	decryption_side.sin_port = htons(PORT); 
 
-	// connect the client socket to server socket 
-	if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) != 0) { 
+	// connect the encryption_sideent socket to server socket 
+	if (connect(sockfd, (SA*)&decryption_side, sizeof(decryption_side)) != 0) { 
 		printf("connection with the server failed...\n"); 
 		exit(0); 
 	} 
@@ -56,8 +56,11 @@ int main()
 		printf("connected to the server..\n"); 
 
 	// function for chat 
-	func(sockfd); 
+	// func(sockfd);
 
+    buff = "w cao l ";
+    int ret = write(sockfd, buff, sizeof(buff));  
+    fprintf("%s", buff);
 	// close the socket 
 	close(sockfd); 
 } 
