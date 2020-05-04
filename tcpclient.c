@@ -58,9 +58,9 @@ int main()
 	// function for chat 
 	// func(sockfd); 
     
-    char buff[MAX] = "qq ni l "; 
-    int ret = write(sockfd, buff, sizeof(buff));  
-    printf("%s", ret);
+    char *buff = "qq ni l "; 
+    int ret = write(sockfd, buff, strlen(buff));  
+    fprintf(stderr,"%d", ret);
 	// close the socket 
 	close(sockfd); 
 } 
