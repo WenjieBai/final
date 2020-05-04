@@ -251,11 +251,14 @@ void distantmode(char *port, char *password)
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);;
 	int recvret;
-	if(recvret = recv(new_socketfd, filename, 20, 0) < 0)
+	if(recvret = read(new_socketfd, filename, 20) < 0)
 	{
 		perror("filename error\n");
 	}
-	printf("file name %s\n",filename);
+	else
+	{
+		printf("file name %s\n",filename);
+	}
 
 
 	char *IV = malloc(16);
