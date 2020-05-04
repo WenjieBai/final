@@ -236,14 +236,14 @@ void distantmode(char *port, char *password)
 		exit(0);
 	}
 
-	// print port number
-    if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
-        perror("getsockname");
-    else
-    {
-        fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
-        fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
-    }
+	// // print port number
+    // if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
+    //     perror("getsockname");
+    // else
+    // {
+    //     fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
+    //     fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
+    // }
 
 
 	//listen
@@ -255,11 +255,12 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&dec_len) < 0)
+	if (new_socketfd = accept(sockfd, (struct sockaddr *)&decryption_side, (socklen_t *)&dec_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
 	}
+	printf("new sock %d", new_socketfd);
 
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
