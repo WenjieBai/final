@@ -5,64 +5,63 @@
 #include <string.h> 
 #include <sys/socket.h> 
 #include <sys/types.h>
+#define PORT 8081 
+#define SA struct sockaddr 
 
-int main()
-{
-    int sockfd;
-	int new_sock;
+int main() 
+{ 
+	int sockfd, connfd, len; 
+	struct sockaddr_in servaddr, encryption_side; 
 
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-	{
-		perror("socket failed");
-		exit(EXIT_FAILURE);
-	}
-	// fprintf(stderr, "fd %d\n", sockfd);
+	// socket create and verification 
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
+	if (sockfd == -1) { 
+		printf("socket creation failed...\n"); 
+		exit(0); 
+	} 
+	else
+		printf("Socket successfully created..\n"); 
+	bzero(&servaddr, sizeof(servaddr)); 
 
-	struct sockaddr_in encryption_side;
-	struct sockaddr_in decryption_side;
+	// assign IP, PORT 
+	servaddr.sin_family = AF_INET; 
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
+	servaddr.sin_port = htons(PORT); 
 
-	socklen_t enc_len = sizeof(encryption_side);
-	socklen_t dec_len = sizeof(decryption_side);
+	// Binding newly created socket to given IP and verification 
+	if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) { 
+		printf("socket bind failed...\n"); 
+		exit(0); 
+	} 
+	else
+		printf("Socket successfully binded..\n"); 
 
-	memset(&encryption_side, 0, sizeof(encryption_side));
-	memset(&decryption_side, 0, sizeof(decryption_side));
+	// Now decryption_side is ready to listen and verification 
+	if ((listen(sockfd, 5)) != 0) { 
+		printf("Listen failed...\n"); 
+		exit(0); 
+	} 
+	else
+		printf("decryption_side listening..\n"); 
+        
+	len = sizeof(encryption_side); 
 
-	//populate address
-	decryption_side.sin_family = AF_INET;
-	decryption_side.sin_addr.s_addr = htonl(INADDR_ANY);
-	decryption_side.sin_port = htons(8081);
+	// Accept the data packet from encryption_sideent and verification 
+	connfd = accept(sockfd, (SA*)&encryption_side, &len); 
+	if (connfd < 0) { 
+		printf("decryption_side acccept failed...\n"); 
+		exit(0); 
+	} 
+	else
+		{
+            printf("decryption_side acccept the encryption_sideent...\n"); 
+            printf("new fd %d\n", connfd);
+        }
 
-	//bind
-	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) < 0)
-	{
-		perror("bind error\n");
-		exit(0);
-	}
+	// Function for chatting between encryption_sideent and decryption_side 
+    read(sockfd, buff, sizeof(buff));
 
-
-	//listen
-	if (listen(sockfd, 3) < 0)
-	{
-		perror("listen error");
-		exit(0);
-	}
-
-	printf("waiting for connnection\n");
-
-	if (new_sock = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&enc_len) < 0)
-	{
-		perror("accept error");
-		exit(0);
-	}
-	fprintf(stderr, "new sock %d", new_sock);
-
-
-	printf("connection from %s : %s\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
-
-	char buffer[1040];
-	memset(buffer, 0, sizeof(buffer));
-    
-	int readret = read(new_sock, buffer, 1040);
-    fprintf(stderr,"buffer %s\n", buffer);
-    fprintf(stderr, "readret %d", readret);
-}
+	// After chatting close the socket 
+	close(sockfd);
+    printf("From encryption_sideent: %s\t To encryption_sideent : ", buff);  
+} 
