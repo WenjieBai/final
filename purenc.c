@@ -223,16 +223,16 @@ void distantmode(char *address, char *password)
 	printf("ip: %s port: %d\n", ip, atoi(port));
 
 	//create socket struct
-	struct sockaddr_in decryption_side;
-	int sock = socket(AF_INET, SOCK_STREAM, 0);
+	struct sockaddr_in server;
+	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	//setup
-	decryption_side.sin_family = AF_INET;
-	decryption_side.sin_addr.s_addr = inet_addr(ip);
-	decryption_side.sin_port = htons(atoi(port));
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = inet_addr(ip);
+	server.sin_port = htons(atoi(port));
 
 	//connect
-	if (connect(sock, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) == -1)
+	if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) == -1)
 	{
 		perror("connect error\n");
 		exit(0);
@@ -241,7 +241,7 @@ void distantmode(char *address, char *password)
 	//phrase 1: send filename and initlization vector
 	int sendret;
 	char *hello = "fuck";
-	int ret = write(sock, hello, 4);
+	int ret = write(sockfd, hello, 4);
 	printf("ret %d", ret);
 	// if (sendret = send(sock, hello, strlen(hello), 0) <= 0)
 	// {
@@ -254,7 +254,7 @@ void distantmode(char *address, char *password)
 	// }
 	
 
-	if (sendret = send(sock, vector, vector_len, 0) < 0)
+	if (sendret = send(sockfd, vector, vector_len, 0) < 0)
 	{
 		perror("IV error\n");
 		exit(0);
@@ -291,7 +291,7 @@ void distantmode(char *address, char *password)
 		}
 		else
 		{
-			sendret = send(sock, out_buffer, readret + 16, 0);
+			sendret = send(sockfd, out_buffer, readret + 16, 0);
 			if (sendret <= 0)
 			{
 				perror("sent error in phrase 2");
@@ -309,13 +309,13 @@ void distantmode(char *address, char *password)
 	
 	//phrase 3: end of transmission
 	char *trans_complete = "transmissioncompleted";
-	send(sock, trans_complete, strlen(trans_complete), 0);
+	send(sockfd, trans_complete, strlen(trans_complete), 0);
 
 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
 	printf("transmitting to %s.\n", address);
 	printf("successfully received.\n");
 
-	close(sock);
+	close(sockfd);
 
 	//Close the file
 	fclose(in);

@@ -148,8 +148,8 @@ void localmode(char *password)
 	printf("local mode\n");
 
 	// initialize crypto handler
-	char* vector= "InitializationVector";
-  	initialize_handler(password, vector);
+	char *vector = "InitializationVector";
+	initialize_handler(password, vector);
 
 	//Create file handler and file buffer
 	FILE *in;
@@ -205,62 +205,64 @@ void distantmode(char *port, char *password)
 {
 	printf("distant mode\n");
 
+	int sockfd, connfd, len;
+	struct sockaddr_in server, client;
 
-	//create socket aand new_sock
-	int sockfd;
-	int new_sock;
-
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	// socket create and verification
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1)
 	{
-		perror("socket failed");
-		exit(EXIT_FAILURE);
-	}
-	// fprintf(stderr, "fd %d\n", sockfd);
-
-	struct sockaddr_in encryption_side;
-	struct sockaddr_in decryption_side;
-
-	socklen_t enc_len = sizeof(encryption_side);
-	socklen_t dec_len = sizeof(decryption_side);
-
-	memset(&encryption_side, 0, sizeof(encryption_side));
-	memset(&decryption_side, 0, sizeof(decryption_side));
-
-	//populate address
-	decryption_side.sin_family = AF_INET;
-	decryption_side.sin_addr.s_addr = htonl(INADDR_ANY);
-	decryption_side.sin_port = htons(atoi(port));
-
-	//bind
-	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) < 0)
-	{
-		perror("bind error\n");
+		printf("socket creation failed...\n");
 		exit(0);
 	}
-
-
-	//listen
-	if (listen(sockfd, 3) < 0)
+	else
 	{
-		perror("listen error");
+		printf("Socket successfully created..\n");
+	}
+	bzero(&server, sizeof(server));
+
+	// assign IP, PORT
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = htonl(INADDR_ANY);
+	server.sin_port = htons(port);
+
+	// Binding newly created socket to given IP and verification
+	if ((bind(sockfd, (struct sockaddr *)&server, sizeof(server))) != 0)
+	{
+		printf("socket bind failed...\n");
 		exit(0);
 	}
+	else
+		printf("Socket successfully binded..\n");
 
-	printf("waiting for connnection\n");
-
-	if (new_sock = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&enc_len) < 0)
+	// Now server is ready to listen and verification
+	if ((listen(sockfd, 5)) != 0)
 	{
-		perror("accept error");
+		printf("Listen failed...\n");
 		exit(0);
 	}
-	fprintf(stderr, "new sock %d", new_sock);
+	else
+		printf("Server listening..\n");
+	len = sizeof(client);
 
+	// Accept the data packet from client and verification
+	connfd = accept(sockfd, (struct sockaddr *)&client, &len);
+	if (connfd < 0)
+	{
+		printf("server acccept failed...\n");
+		exit(0);
+	}
+	else
+	{
+		printf("server acccept the client...\n");
+		printf("connfd %d", connfd);
+	}
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	char buffer[1040];
 	memset(buffer, 0, sizeof(buffer));
-	int readret = read(new_sock, buffer, 1040);
+	int readret = read(connfd, buffer, 1040);
 	fprintf(stderr, "%d", readret);
 	fprintf(stderr, "%s", buffer);
 
@@ -268,28 +270,27 @@ void distantmode(char *port, char *password)
 	char *filename = malloc(20);
 	int recvret;
 	int ret = read(new_sock, buffer, 4);
-	fprintf(stderr,"buffer %s\n", buffer);
-	fprintf(stderr,"ret %d", ret);
+	fprintf(stderr, "buffer %s\n", buffer);
+	fprintf(stderr, "ret %d", ret);
 
-	if(recvret = read(new_sock, filename, 20) < 0)
+	if (recvret = read(new_sock, filename, 20) < 0)
 	{
 		perror("filename error\n");
 	}
 	else
 	{
-		printf("file name %s\n",filename);
+		printf("file name %s\n", filename);
 	}
 
-
 	char *IV = malloc(16);
-	if((recvret = recv(new_sock, IV, 16, 0)) < 0)
+	if ((recvret = recv(new_sock, IV, 16, 0)) < 0)
 	{
 		perror("recv iv error.\n");
 	}
 	IV[16] = '\0';
 
 	//Configure glib and file handler
-	initialize_handler(password,  IV);
+	initialize_handler(password, IV);
 
 	FILE *out;
 	if (out = fopen(filename, "r"))
@@ -303,7 +304,7 @@ void distantmode(char *port, char *password)
 	}
 
 	//phrase 2: receive encrypted data
-	char * in_buffer = malloc(2048);
+	char *in_buffer = malloc(2048);
 	int filesize = 0;
 	int writesize = 0;
 	while (1)
@@ -338,7 +339,7 @@ void distantmode(char *port, char *password)
 		free(out_buffer);
 
 		char *trans_complete = "transmissioncompleted";
-		if (strcmp(in_buffer,trans_complete) == 0)
+		if (strcmp(in_buffer, trans_complete) == 0)
 		{
 			printf("Transmission completed");
 			break;
@@ -351,6 +352,3 @@ void distantmode(char *port, char *password)
 	free(in_buffer);
 	gcry_cipher_close(crypto);
 }
-
-
-

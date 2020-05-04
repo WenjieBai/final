@@ -45,7 +45,7 @@ void func(int sockfd)
 int main()
 {
     int sockfd, connfd, len;
-    struct sockaddr_in servaddr, client;
+    struct sockaddr_in server, client;
 
     // socket create and verification
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -56,15 +56,15 @@ int main()
     }
     else
         printf("Socket successfully created..\n");
-    bzero(&servaddr, sizeof(servaddr));
+    bzero(&server, sizeof(server));
 
     // assign IP, PORT
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(PORT);
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
+    server.sin_port = htons(PORT);
 
     // Binding newly created socket to given IP and verification
-    if ((bind(sockfd, (SA *)&servaddr, sizeof(servaddr))) != 0)
+    if ((bind(sockfd, (SA *)&server, sizeof(server))) != 0)
     {
         printf("socket bind failed...\n");
         exit(0);
@@ -83,7 +83,7 @@ int main()
     len = sizeof(client);
 
     // Accept the data packet from client and verification
-    connfd = accept(sockfd, (SA *)&client, &len);
+    connfd = accept(sockfd, (struct sockaddr *)&client, &len);
     if (connfd < 0)
     {
         printf("server acccept failed...\n");
