@@ -208,7 +208,7 @@ void distantmode(char *port, char *password)
 
 	//create socket aand new_sock
 	int sockfd;
-	int new_sock;
+	int new_sock = 4;
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
@@ -237,15 +237,6 @@ void distantmode(char *port, char *password)
 		perror("bind error\n");
 		exit(0);
 	}
-
-	//  // print port number
-    // if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
-    //     perror("getsockname");
-    // else
-    // {
-    //     fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
-    //     fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
-    // }
 
 
 	//listen
