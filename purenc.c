@@ -249,7 +249,7 @@ void distantmode(char *address, char *password)
 
 	//phrase 1: send filename and initlization vector
 	int writeret;
-	if (ret = write(sockfd, filename, 20) <= 0)
+	if (writeret = write(sockfd, filename, 20) <= 0)
 	{
 		perror("file name\n");
 		error(0);
