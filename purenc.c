@@ -222,7 +222,7 @@ void distantmode(char *address, char *password)
 	char *port = strtok(NULL, ":");
 	printf("ip: %s port: %d\n", ip, atoi(port));
 
-	//Create socket struct
+	//create socket struct
 	struct sockaddr_in decryption_side;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -241,15 +241,17 @@ void distantmode(char *address, char *password)
 	//phrase 1: send filename and initlization vector
 	int sendret;
 	char *hello = "fuck";
-	if (sendret = send(sock, hello, strlen(hello), 0) <= 0)
-	{
-		perror("file name\n");
-		error(0);
-	}
-	else
-	{
-		printf("file name %s, sendret %d", filename, sendret);
-	}
+	int ret = send(sock, hello, 4, 0);
+	printf("ret %d", ret);
+	// if (sendret = send(sock, hello, strlen(hello), 0) <= 0)
+	// {
+	// 	perror("file name\n");
+	// 	error(0);
+	// }
+	// else
+	// {
+	// 	printf("file name %s, sendret %d\n", filename, sendret);
+	// }
 	
 
 	if (sendret = send(sock, vector, vector_len, 0) < 0)

@@ -241,10 +241,7 @@ void distantmode(char *port, char *password)
 		perror("accept error");
 		exit(0);
 	}
-	// if (getsockname(new_socketfd, (struct sockaddr *)&encryption_side, &enc_len) == -1)
-	// {
-	// 	perror("getsockname error\n");
-	// }
+
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
