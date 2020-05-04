@@ -240,9 +240,10 @@ void distantmode(char *address, char *password)
 
 	//phrase 1: send filename and initlization vector
 	int sendret;
-	if (sendret = send(sock, filename, 20, 0) < 0)
+	if (sendret = send(sock, filename, 20, 0) <= 0)
 	{
 		perror("file name\n");
+		error(0);
 	}
 	else
 	{
@@ -252,7 +253,8 @@ void distantmode(char *address, char *password)
 
 	if (sendret = send(sock, vector, vector_len, 0) < 0)
 	{
-		perror("IV\n");
+		perror("IV error\n");
+		exit(0);
 	}
 
 	//phrase 2: send encrypted data
@@ -286,10 +288,11 @@ void distantmode(char *address, char *password)
 		}
 		else
 		{
-			int sendret = send(sock, out_buffer, readret + 16, 0);
-			if (sendret < 0)
+			sendret = send(sock, out_buffer, readret + 16, 0);
+			if (sendret <= 0)
 			{
 				perror("sent error in phrase 2");
+				exit(0);
 			}
 			else
 			{
