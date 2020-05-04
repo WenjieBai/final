@@ -249,7 +249,7 @@ void distantmode(char *port, char *password)
 	char *filename = malloc(20);
 	char bu[4];
 	int recvret;
-	recvret = read(new_socketfd, bu, 4);
+	int ret = recv(new_socketfd, bu, 4, 0);
 	printf("bu %s\n", bu);
 	if(recvret = read(new_socketfd, filename, 20) < 0)
 	{
