@@ -218,18 +218,18 @@ void distantmode(char *port, char *password)
 
 	struct sockaddr_in encryption_side;
 	struct sockaddr_in decryption_side;
-	socklen_t dec_len = sizeof(decryption_side);
+
 	socklen_t enc_len = sizeof(encryption_side);
 
 	memset(&decryption_side, 0, sizeof(decryption_side));
 
 	//populate address
 	decryption_side.sin_family = AF_INET;
-	decryption_side.sin_addr.s_addr = INADDR_ANY;
+	decryption_side.sin_addr.s_addr = htonl(INADDR_ANY);
 	decryption_side.sin_port = htons(atoi(port));
 
 	//bind
-	if (bind(sockfd, (struct sockaddr *)&decryption_side, dec_len) < 0)
+	if (bind(sockfd, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) < 0)
 	{
 		perror("bind error\n");
 		exit(0);
@@ -254,12 +254,12 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&enc_len) < 0)
+	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
 	}
-	printf("new sock %d", new_socketfd);
+	fprintf(stderr, "new sock %d", new_socketfd);
 
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
