@@ -208,14 +208,14 @@ void distantmode(char *port, char *password)
 
 	//create socket aand new_sock
 	int sockfd;
-	int new_sock = 4;
+	int new_sock;
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
-	fprintf(stderr, "fd %d\n", sockfd);
+	// fprintf(stderr, "fd %d\n", sockfd);
 
 	struct sockaddr_in encryption_side;
 	struct sockaddr_in decryption_side;
@@ -248,7 +248,7 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_sock = accept(sockfd, (struct sockaddr *)&decryption_side, &dec_len) < 0)
+	if (new_sock = accept(sockfd, (struct sockaddr *)&encryption_side, (socklen_t *)&enc_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
@@ -256,11 +256,12 @@ void distantmode(char *port, char *password)
 	fprintf(stderr, "new sock %d", new_sock);
 
 
-	// printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
+	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
 	char buffer[4];
+	memset(buffer, 0, 4);
 	int recvret;
 	int ret = read(new_sock, buffer, 4);
 	fprintf(stderr,"buffer %s\n", buffer);

@@ -232,7 +232,7 @@ void distantmode(char *address, char *password)
 	decryption_side.sin_port = htons(atoi(port));
 
 	//connect
-	if (connect(sock, (struct sockaddr *)&decryption_side, sizeof(struct sockaddr)) == -1)
+	if (connect(sock, (struct sockaddr *)&decryption_side, sizeof(decryption_side)) == -1)
 	{
 		perror("connect error\n");
 		exit(0);
@@ -241,7 +241,7 @@ void distantmode(char *address, char *password)
 	//phrase 1: send filename and initlization vector
 	int sendret;
 	char *hello = "fuck";
-	int ret = send(sock, hello, 4, 0);
+	int ret = write(sock, hello, 4);
 	printf("ret %d", ret);
 	// if (sendret = send(sock, hello, strlen(hello), 0) <= 0)
 	// {
