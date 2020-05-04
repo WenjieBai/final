@@ -241,7 +241,7 @@ void distantmode(char *port, char *password)
 		perror("accept error");
 		exit(0);
 	}
-	if (getsockname(new_sockfd, (struct sockaddr *)&encryption_side, &enc_len) == -1)
+	if (getsockname(new_socketfd, (struct sockaddr *)&encryption_side, &enc_len) == -1)
 	{
 		perror("getsockname error\n");
 	}
@@ -249,17 +249,13 @@ void distantmode(char *port, char *password)
 	printf("connection from %s : %d", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
 	// phrase 1: receive filename and IV
-
-	unsigned char[1040] buffer;
-	memset(buffer, 0, sizeof(buffer));
-
 	char *filename = malloc(20);;
 	int recvret;
 	if(recvret = recv(new_socketfd, filename, 20, 0) < 0)
 	{
 		perror("filename\n");
 	}
-	printf("file name %s\n"filename);
+	printf("file name %s\n",filename);
 
 
 	char *IV = malloc(16);
@@ -276,7 +272,7 @@ void distantmode(char *port, char *password)
 	if (out = fopen(filename, "r"))
 	{
 		printf("File %s already exists. Exiting.\n", filename);
-		return 1;
+		exit(0);
 	}
 	else
 	{
