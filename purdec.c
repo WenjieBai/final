@@ -260,10 +260,10 @@ void distantmode(char *port, char *password)
 
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
-	char bu[4];
+	char buffer[4];
 	int recvret;
-	int ret = recv(new_sock, bu, 4, 0);
-	fprintf(stderr,"bu %s\n", bu);
+	int ret = read(new_sock, buffer, 4);
+	fprintf(stderr,"buffer %s\n", buffer);
 	fprintf(stderr,"ret %d", ret);
 
 	if(recvret = read(new_sock, filename, 20) < 0)
