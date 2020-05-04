@@ -31,7 +31,7 @@ int main()
     //phrase 1: send filename and initlization vector
     int sendret;
     char *hello = "come on";
-    int ret = write(sock, hello, 7);
+    int ret = write(sock, hello, 8);
     printf("ret %d", ret);
     return 0;
 }

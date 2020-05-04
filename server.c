@@ -54,15 +54,16 @@ int main()
 	} 
 	else
 		{
-            printf("decryption_side acccept the encryption_sideent...\n"); 
+            printf("decryption_side acccept the encryption_side...\n"); 
             printf("new fd %d\n", connfd);
         }
 
-	// Function for chatting between encryption_sideent and decryption_side 
+	// Function for chatting between encryption_side and decryption_side 
     char buff[80]; 
     read(sockfd, buff, sizeof(buff));
+    printf("From encryption_side: %s", buff);  
 
 	// After chatting close the socket 
 	close(sockfd);
-    printf("From encryption_sideent: %s\t To encryption_sideent : ", buff);  
+    
 } 
