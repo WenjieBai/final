@@ -1,0 +1,367 @@
+
+Signaling game
+From Wikipedia, the free encyclopedia
+Jump to navigationJump to search
+
+An extensive form representation of a signaling game
+In game theory, a signaling game is a simple type of a dynamic Bayesian game.[1]
+
+It is a game with two players, called the sender (S) and the receiver (R):
+
+The sender can have one of several types. The sender's type, t, determines the payoff function of the sender. It is the private information of the sender - it is not known to the receiver.
+The receiver has only a single type, so by the assumption of common priors, their payoff function is known to both players.
+The game has two steps:
+
+The sender plays in the first step. They can play one of several actions, which are called "messages". The set of possible messages is M = {m1, m2, m3,..., mj}.
+The receiver plays in the second step, after viewing the sender's message. The set of possible actions is A = {a1, a2, a3,...., ak}.
+The two players receive payoffs dependent on the sender's type, the message chosen by the sender and the action chosen by the receiver.[2][3]
+
+
+Contents
+1	Perfect Bayesian equilibrium
+2	Examples
+2.1	Reputation game
+2.2	Education game
+2.3	Beer-Quiche game
+3	Applications of signaling games
+3.1	Philosophy
+3.2	Economics
+3.3	Biology
+4	Costly versus cost-free signaling
+5	See also
+6	References
+Perfect Bayesian equilibrium[edit]
+Main article: Perfect Bayesian equilibrium
+The equilibrium concept that is relevant for signaling games is Perfect Bayesian equilibrium—a refinement of both Bayesian Nash equilibrium and subgame-perfect equilibrium.
+
+A sender of type 
+t
+j
+t_{j} sends a message 
+m
+∗
+(
+t
+j
+)
+m^{*}(t_{j}) in the set of probability distributions over M. (
+m
+(
+t
+j
+)
+m(t_{j}) represents the probabilities that type 
+t
+j
+t_{j} will take any of the messages in M.) The receiver observing the message m takes an action 
+a
+∗
+(
+m
+)
+a^{*}(m) in the space of probability distributions over A.
+
+A game is in perfect Bayesian equilibrium if it meets all four of the following requirements:
+
+The receiver must have a belief about which types can have sent message m. These beliefs can be described as a probability distribution 
+μ
+(
+t
+i
+|
+m
+)
+\mu (t_{i}|m), the probability that the sender has type 
+t
+i
+t_{i} if they choose message 
+m
+m. The sum over all types 
+t
+i
+t_{i} of these probabilities has to be 1 conditional on any message m.
+The action the receiver chooses must maximize the expected utility of the receiver given their beliefs about which type could have sent message 
+m
+m, 
+μ
+(
+t
+|
+m
+)
+\mu (t|m). This means that the sum 
+∑
+t
+i
+μ
+(
+t
+i
+|
+m
+)
+U
+R
+(
+t
+i
+,
+m
+,
+a
+)
+\sum _{{t_{i}}}\mu (t_{i}|m)U_{R}(t_{i},m,a) is maximized. The action 
+a
+a that maximizes this sum is 
+a
+∗
+(
+m
+)
+a^{*}(m).
+For each type, 
+t
+t, the sender chooses to send the message 
+m
+∗
+m^{*} that maximizes the sender's utility 
+U
+S
+(
+t
+,
+m
+,
+a
+∗
+(
+m
+)
+)
+U_{S}(t,m,a^{*}(m)) given the strategy chosen by the receiver, 
+a
+∗
+a^{*}.
+For each message 
+m
+m the sender can send, if there exists a type 
+t
+t such that 
+m
+∗
+(
+t
+)
+m^{*}(t) assigns strictly positive probability to 
+m
+m (i.e. for each message which is sent with positive probability), the belief the receiver has about the type of the sender if they observe message 
+m
+m, 
+μ
+(
+t
+|
+m
+)
+\mu (t|m) satisfies Bayes' rule: 
+μ
+(
+t
+|
+m
+)
+=
+p
+(
+t
+)
+/
+∑
+t
+i
+p
+(
+t
+i
+)
+\mu (t|m)=p(t)/\sum _{{t_{i}}}p(t_{i})
+The perfect Bayesian equilibria in such a game can be divided in three different categories: pooling equilibria, separating equilibria and semi-separating
+
+A pooling equilibrium is an equilibrium where senders with different types all choose the same message. This means that the sender's message does not give any information to the receiver, so the receiver's beliefs are not updated after seeing the message.
+A separating equilibrium is an equilibrium where senders with different types always choose different messages. This means that the sender's message always reveals the sender's type, so the receiver's beliefs become deterministic after seeing the message.
+A semi-separating equilibrium (also called partial-pooling) equilibrium is an equilibrium where some types of senders choose the same message and other types choose different messages.
+Note that, if there are more types of senders than there are messages, the equilibrium can never be a separating equilibrium (but may be semi-separating equilibria). There are also hybrid equilibria, in which the sender randomizes between pooling and separating.
+
+Examples[edit]
+Reputation game[edit]
+Receiver
+Sender
+Stay	Exit
+Sane, Prey	P1+P1, D2	P1+M1, 0
+Sane, Accommodate	D1+D1, D2	D1+M1, 0
+Crazy, Prey	X1, P2	X1, 0
+In this game,[1]:326–329[4] the sender and the receiver are firms. The sender is an incumbent firm and the receiver is an entrant firm.
+
+The sender can be one of two types: Sane or Crazy. A sane sender can send one of two messages: Prey and Accommodate. A crazy sender can only Prey.
+The receiver can do one of two actions: Stay or Exit.
+The payoffs are given by the table at the right. We assume that:
+
+M1>D1>P1, i.e., a sane sender prefers to be a monopoly (M1), but if it is not a monopoly, it prefers to accommodate (D1) than to prey (P1). Note that the value of X1 is irrelevant since a Crazy firm has only one possible action.
+D2>0>P2, i.e., the receiver prefers to stay in a market with a sane competitor (D2) than to exit the market (0), but prefers to exit than to stay in a market with a crazy competitor (P2).
+Apriori, the sender has probability p to be sane and 1-p to be crazy.
+We now look for perfect Bayesian equilibria. It is convenient to differentiate between separating equilibria and pooling equilibria.
+
+A separating equilibrium, in our case, is one in which the sane sender always accommodates. This separates it from a crazy sender. In the second period, the receiver has complete information: their beliefs are "If Accommodate then the sender is sane, otherwise the sender is crazy". Their best-response is: "If Accommodate then Stay, if Prey then Exit". The payoff of the sender when they accommodate is D1+D1, but if they deviate to Prey their payoff changes to P1+M1; therefore, a necessary condition for a separating equilibrium is D1+D1≥P1+M1 (i.e., the cost of preying overrides the gain from being a monopoly). It is possible to show that this condition is also sufficient.
+A pooling equilibrium is one in which the sane sender always preys. In the second period, the receiver has no new information. If the sender preys, then the receiver's beliefs must be equal to the apriori beliefs, which are, the sender is sane with probability p and crazy with probability 1-p. Therefore, the receiver's expected payoff from staying is: [p D2 + (1-p) P2]; the receiver stays if-and-only-if this expression is positive. The sender can gain from preying, only if the receiver exits. Therefore, a necessary condition for a pooling equilibrium is p D2 + (1-p) P2 ≤ 0 (intuitively, the receiver is careful and will not enter the market if there is a risk that the sender is crazy. The sender knows this, and thus hides their true identity by always preying like a crazy). But this condition is not sufficient: if the receiver exits also after Accommodate, then it is better for the sender to Accommodate, since it is cheaper than Prey. So it is necessary that the receiver stays after Accommodate, and it is necessary that D1+D1<P1+M1 (i.e., the gain from being a monopoly overrides the cost of preying). Finally, we must make sure that staying after Accommodate is a best-response for the receiver. For this, we must specify the receiver's beliefs after Accommodate. Note that this path has probability 0, so Bayes' rule does not apply, and we are free to choose the receiver's beliefs as e.g. "If Accommodate then the sender is sane".
+To summarize:
+
+If preying is costly for a sane sender (D1+D1≥P1+M1), they will accommodate and there will be a unique separating PBE: the receiver will stay after Accommodate and exit after Prey.
+If preying is not too costly for a sane sender (D1+D1<P1+M1), and it is harmful for the receiver (p D2 + (1-p) P2 ≤ 0), the sender will prey and there will be a unique pooling PBE: again the receiver will stay after Accommodate and exit after Prey. Here, the sender is willing to lose some value by preying in the first period, in order to build a reputation of a predatory firm, and convince the receiver to exit.
+If preying is not costly for the sender nor harmful for the receiver, there will not be a PBE in pure strategies. There will be a unique PBE in mixed strategies - both the sender and the receiver will randomize between their two actions.
+Education game[edit]
+This game was first presented by Michael Spence.[5][1]:329–331 In this game, the sender is a worker and the receiver is an employer.
+
+The worker can be one of two types: Wise (with probability p) or Dumb (with probability 1-p). Each type can select their own level of education, e.g. GoToCollege or StayAtHome. Going to college has a cost; the cost is lower for a wise worker than for a dumb one.
+The employer has to decide how much salary to offer the worker. The goal of the employer is to offer a high salary to a Wise worker and a low salary to a Dumb worker. However, the employer does not know the true talent of the worker - only their level of education.
+In this model it is assumed that the level of education does not influence the productivity of the worker; it is used only as a signal regarding the worker's talent.
+
+To summarize: only workers with high ability are able to attain a specific level of education without it being more costly than their increase in wage. In other words, the benefits of education are only greater than the costs for workers with a high level of ability, so only workers with a high ability will get an education.
+
+Beer-Quiche game[edit]
+The Beer-Quiche game of Cho and Kreps[6] draws on the stereotype of quiche eaters being less masculine. In this game, an individual B is considering whether to duel with another individual A. B knows that A is either a wimp or is surly but not which. B would prefer a duel if A is a wimp but not if A is surly. Player A, regardless of type, wants to avoid a duel. Before making the decision B has the opportunity to see whether A chooses to have beer or quiche for breakfast. Both players know that wimps prefer quiche while surlies prefer beer. The point of the game is to analyze the choice of breakfast by each kind of A. This has become a standard example of a signaling game. See[7]:14–18 for more details.
+
+Applications of signaling games[edit]
+Signaling games describe situations where one player has information the other player does not have. These situations of asymmetric information are very common in economics and behavioral biology.
+
+Philosophy[edit]
+The first signaling game was the Lewis signaling game, which occurred in David K. Lewis' Ph. D. dissertation (and later book) Convention. See[8] Replying to W.V.O. Quine,[9][10] Lewis attempts to develop a theory of convention and meaning using signaling games. In his most extreme comments, he suggests that understanding the equilibrium properties of the appropriate signaling game captures all there is to know about meaning:
+
+I have now described the character of a case of signaling without mentioning the meaning of the signals: that two lanterns meant that the redcoats were coming by sea, or whatever. But nothing important seems to have been left unsaid, so what has been said must somehow imply that the signals have their meanings.[11]
+The use of signaling games has been continued in the philosophical literature. Others have used evolutionary models of signaling games to describe the emergence of language. Work on the emergence of language in simple signaling games includes models by Huttegger,[12] Grim, et al.,[13] Skyrms,[14][15] and Zollman.[16] Harms,[17][18] and Huttegger,[19] have attempted to extend the study to include the distinction between normative and descriptive language.
+
+Economics[edit]
+Main article: Signalling (economics)
+The first application of signaling games to economic problems was Michael Spence's Education game. A second application was the Reputation game.
+
+Biology[edit]
+Valuable advances have been made by applying signaling games to a number of biological questions. Most notably, Alan Grafen's (1990) handicap model of mate attraction displays.[20] The antlers of stags, the elaborate plumage of peacocks and bird-of-paradise, and the song of the nightingale are all such signals. Grafen's analysis of biological signaling is formally similar to the classic monograph on economic market signaling by Michael Spence.[21] More recently, a series of papers by Getty[22][23][24][25] shows that Grafen's analysis, like that of Spence, is based on the critical simplifying assumption that signalers trade off costs for benefits in an additive fashion, the way humans invest money to increase income in the same currency. This assumption that costs and benefits trade off in an additive fashion might be valid for some biological signaling systems, but is not valid for multiplicative tradeoffs, such as the survival cost – reproduction benefit tradeoff that is assumed to mediate the evolution of sexually selected signals.
+
+Charles Godfray (1991) modeled the begging behavior of nestling birds as a signaling game.[26] The nestlings begging not only informs the parents that the nestling is hungry, but also attracts predators to the nest. The parents and nestlings are in conflict. The nestlings benefit if the parents work harder to feed them than the parents ultimate benefit level of investment. The parents are trading off investment in the current nestlings against investment in future offspring.
+
+Pursuit deterrent signals have been modeled as signaling games.[27] Thompson's gazelles are known sometimes to perform a 'stott', a jump into the air of several feet with the white tail showing, when they detect a predator. Alcock and others have suggested that this action is a signal of the gazelle's speed to the predator. This action successfully distinguishes types because it would be impossible or too costly for a sick creature to perform and hence the predator is deterred from chasing a stotting gazelle because it is obviously very agile and would prove hard to catch.
+
+The concept of information asymmetry in molecular biology has long been apparent.[28] Although molecules are not rational agents, simulations have shown that through replication, selection, and genetic drift, molecules can behave according to signaling game dynamics. Such models have been proposed to explain, for example, the emergence of the genetic code from an RNA and amino acid world.[29]
+
+See also: Sir Philip Sidney game
+Costly versus cost-free signaling[edit]
+One of the major uses of signaling games both in economics and biology has been to determine under what conditions honest signaling can be an equilibrium of the game. That is, under what conditions can we expect rational people or animals subject to natural selection to reveal information about their types?
+
+If both parties have coinciding interest, that is they both prefer the same outcomes in all situations, then honesty is an equilibrium. (Although in most of these cases non-communicative equilbria exist as well.) However, if the parties' interests do not perfectly overlap, then the maintenance of informative signaling systems raises an important problem.
+
+Consider a circumstance described by John Maynard Smith regarding transfer between related individuals. Suppose a signaler can be either starving or just hungry, and they can signal that fact to another individual who has food. Suppose that they would like more food regardless of their state, but that the individual with food only wants to give them the food if they are starving. While both players have identical interests when the signaler is starving, they have opposing interests when the signaler is only hungry. When they are only hungry, they have an incentive to lie about their need in order to obtain the food. And if the signaler regularly lies, then the receiver should ignore the signal and do whatever they think is best.
+
+Determining how signaling is stable in these situations has concerned both economists and biologists, and both have independently suggested that signal cost might play a role. If sending one signal is costly, it might only be worth the cost for the starving person to signal. The analysis of when costs are necessary to sustain honesty has been a significant area of research in both these fields.
+
+See also[edit]
+Cheap talk
+Extensive form game
+Incomplete information
+Intuitive criterion and Divine equilibrium – refinements of PBE in signaling games.
+Screening game – a related kind of game where the receiver, rather than choosing an action based on a signal, gives the sender proposals based on the type of the sender, which the sender has some control over.
+Signalling (economics)
+Signalling theory
+References[edit]
+^ Jump up to: a b c Subsection 8.2.2 in Template:Cite Fudenberg Trole 1991
+^ Gibbons, Robert (1992). A Primer in Game Theory. New York: Harvester Wheatsheaf. ISBN 978-0-7450-1159-2.
+^ Osborne, M. J. & Rubenstein, A. (1994). A Course in Game Theory. Cambridge: MIT Press. ISBN 978-0-262-65040-3.
+^ which is a simplified version of a reputation model suggested in 1982 by Kreps, Wilson, Milgrom and Roberts
+^ Spence, A. M. (1973). "Job Market Signaling". Quarterly Journal of Economics. 87 (3): 355–374. doi:10.2307/1882010. JSTOR 1882010.
+^ Cho, In-Koo; Kreps, David M. (May 1987). "Signaling Games and Stable Equilibria". The Quarterly Journal of Economics. 102 (2): 179–222. CiteSeerX 10.1.1.407.5013. doi:10.2307/1885060. JSTOR 1885060.
+^ James Peck. "Perfect Bayesian Equilibrium" (PDF). Ohio State University. Retrieved 2 September 2016.
+^ Lewis, D. (1969). Convention. A Philosophical Study. Cambridge: Harvard University Press.
+^ Quine, W. V. O. (1936). "Truth by Convention". Philosophical Essays for Alfred North Whitehead. London: Longmans, Green & Co. pp. 90–124. ISBN 978-0-8462-0970-6. (Reprinting)
+^ Quine, W. V. O. (1960). "Carnap and Logical Truth". Synthese. 12 (4): 350–374. doi:10.1007/BF00485423.
+^ Lewis (1969), p. 124.
+^ Huttegger, S. M. (2007). "Evolution and the Explanation of Meaning". Philosophy of Science. 74 (1): 1–24. doi:10.1086/519477.
+^ Grim, P.; Kokalis, T.; Alai-Tafti, A.; Kilb, N.; St. Denis, Paul (2001). "Making Meaning Happen". Technical Report #01-02. Stony Brook: Group for Logic and Formal Semantics SUNY, Stony Brook.
+^ Skyrms, B. (1996). Evolution of the Social Contract. Cambridge: Cambridge University Press. ISBN 978-0-521-55471-8.
+^ Skyrms, B. (2010). Signals Evolution, Learning & Information. New York: Oxford University Press. ISBN 978-0-19-958082-8.
+^ Zollman, K. J. S. (2005). "Talking to Neighbors: The Evolution of Regional Meaning". Philosophy of Science. 72 (1): 69–85. doi:10.1086/428390.
+^ Harms, W. F. (2000). "Adaption and Moral Realism". Biology and Philosophy. 15 (5): 699–712. doi:10.1023/A:1006661726993.
+^ Harms, W. F. (2004). Information and Meaning in Evolutionary Processes. Cambridge: Cambridge University Press. ISBN 978-0-521-81514-7.
+^ Huttegger, S. M. (2005). "Evolutionary Explanations of Indicatives and Imperatives". Erkenntnis. 66 (3): 409–436. doi:10.1007/s10670-006-9022-1.
+^ Grafen, A. (1990). "Biological signals as handicaps". Journal of Theoretical Biology. 144 (4): 517–546. doi:10.1016/S0022-5193(05)80088-8. PMID 2402153.
+^ Spence, A. M. (1974). Market Signaling: Information Transfer in Hiring and Related Processes. Cambridge: Harvard University Press.
+^ Getty, T. (1998). "Handicap signalling: when fecundity and viability do not add up". Animal Behaviour. 56 (1): 127–130. doi:10.1006/anbe.1998.0744. PMID 9710469.
+^ Getty, T. (1998). "Reliable signalling need not be a handicap". Animal Behaviour. 56 (1): 253–255. doi:10.1006/anbe.1998.0748. PMID 9710484.
+^ Getty, T. (2002). "Signaling health versus parasites". The American Naturalist. 159 (4): 363–371. doi:10.1086/338992. PMID 18707421.
+^ Getty, T. (2006). "Sexually selected signals are not similar to sports handicaps". Trends in Ecology & Evolution. 21 (2): 83–88. doi:10.1016/j.tree.2005.10.016. PMID 16701479.
+^ Godfray, H. C. J. (1991). "Signalling of need by offspring to their parents". Nature. 352 (6333): 328–330. doi:10.1038/352328a0.
+^ Yachi, S. (1995). "How can honest signalling evolve? The role of the handicap principle". Proceedings of the Royal Society of London B. 262 (1365): 283–288. doi:10.1098/rspb.1995.0207.
+^ John Maynard Smith. (2000) The Concept of Information in Biology. Philosophy of Science. 67(2):177-194
+^ Jee, J.; Sundstrom, A.; Massey, S.E.; Mishra, B. (2013). "What can information-asymmetric games tell us about the context of Crick's 'Frozen Accident'?". Journal of the Royal Society Interface. 10 (88): 20130614. doi:10.1098/rsif.2013.0614. PMC 3785830. PMID 23985735.
+hidevte
+Topics in game theory
+Definitions	
+Cooperative game Determinacy Escalation of commitment Extensive-form game First-player and second-player win Game complexity Graphical game Hierarchy of beliefs Information set Normal-form game Preference Sequential game Simultaneous game Simultaneous action selection Solved game Succinct game
+Equilibrium
+concepts	
+Nash equilibrium Subgame perfection Mertens-stable equilibrium Bayesian Nash equilibrium Perfect Bayesian equilibrium Trembling hand Proper equilibrium Epsilon-equilibrium Correlated equilibrium Sequential equilibrium Quasi-perfect equilibrium Evolutionarily stable strategy Risk dominance Core Shapley value Pareto efficiency Gibbs equilibrium Quantal response equilibrium Self-confirming equilibrium Strong Nash equilibrium Markov perfect equilibrium
+Strategies	
+Dominant strategies Pure strategy Mixed strategy Strategy-stealing argument Tit for tat Grim trigger Collusion Backward induction Forward induction Markov strategy
+Classes
+of games	
+Symmetric game Perfect information Repeated game Signaling game Screening game Cheap talk Zero-sum game Mechanism design Bargaining problem Stochastic game n-player game Large Poisson game Nontransitive game Global game Strictly determined game Potential game
+Games	
+Go Chess Infinite chess Checkers Tic-tac-toe Prisoner's dilemma Optional prisoner's dilemma Traveler's dilemma Coordination game Chicken Centipede game Volunteer's dilemma Dollar auction Battle of the sexes Stag hunt Matching pennies Ultimatum game Rock paper scissors Pirate game Dictator game Public goods game Blotto game War of attrition El Farol Bar problem Fair division Fair cake-cutting Cournot game Deadlock Diner's dilemma Guess 2/3 of the average Kuhn poker Nash bargaining game Prisoners and hats puzzle Trust game Princess and Monster game Rendezvous problem
+Theorems	
+Arrow's impossibility theorem Aumann's agreement theorem Folk theorem Minimax theorem Nash's theorem Purification theorem Revelation principle Zermelo's theorem
+Key
+figures	
+Albert W. Tucker Amos Tversky Antoine Augustin Cournot Ariel Rubinstein Claude Shannon Daniel Kahneman David K. Levine David M. Kreps Donald B. Gillies Drew Fudenberg Eric Maskin Harold W. Kuhn Herbert Simon Hervé Moulin Jean Tirole Jean-François Mertens Jennifer Tour Chayes John Harsanyi John Maynard Smith John Nash John von Neumann Kenneth Arrow Kenneth Binmore Leonid Hurwicz Lloyd Shapley Melvin Dresher Merrill M. Flood Olga Bondareva Oskar Morgenstern Paul Milgrom Peyton Young Reinhard Selten Robert Axelrod Robert Aumann Robert B. Wilson Roger Myerson Samuel Bowles Suzanne Scotchmer Thomas Schelling William Vickrey
+See also	
+All-pay auction Alpha–beta pruning Bertrand paradox Bounded rationality Combinatorial game theory Confrontation analysis Coopetition Evolutionary game theory First-move advantage in chess Game mechanics Glossary of game theory List of game theorists List of games in game theory No-win situation Solving chess Topological game Tragedy of the commons Tyranny of small decisions
+Categories: Game theory game classesAsymmetric information
+Navigation menu
+Not logged inTalkContributionsCreate accountLog in
+ArticleTalkReadEditView historySearch
+  
+Main page
+Contents
+Featured content
+Current events
+Random article
+Donate to Wikipedia
+Wikipedia store
+Interaction
+Help
+About Wikipedia
+Community portal
+Recent changes
+Contact page
+Tools
+What links here
+Related changes
+Upload file
+Special pages
+Permanent link
+Page information
+Wikidata item
+Cite this page
+Print/export
+Download as PDF
+Printable version
+
+Languages
+Deutsch
+Español
+فارسی
+Italiano
+日本語
+Tiếng Việt
+中文
+Edit links
+This page was last edited on 26 April 2020, at 19:56 (UTC).
+Text is available under the Creative Commons Attribution-ShareAlike License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.
+Privacy policyAbout WikipediaDisclaimersContact WikipediaDevelopersStatisticsCookie statementMobile view
+Wikimedia FoundationPowered by MediaWiki

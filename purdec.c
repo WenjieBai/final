@@ -283,8 +283,6 @@ void distantmode(char *port, char *password)
 		IV[16] = '\0';
 		printf("IV %s", IV);
 	}
-	
-	
 
 	//Configure glib and file handler
 	initialize_handler(password, IV);
@@ -316,18 +314,10 @@ void distantmode(char *port, char *password)
 		if (recvret > 0 && !decrypt(crypto, out_buffer, out_size, in_buffer, 2048))
 		{
 
-			if (recvret < 1024)
-			{
-				out_buffer[recvret - 19] = '\0';
-				fwrite(out_buffer, recvret - 19, 1, out);
-				writesize += recvret - 19;
-			}
-			else
-			{
-				out_buffer[recvret - 16] = '\0';
-				fwrite(out_buffer, recvret - 16, 1, out);
-				writesize += recvret - 16;
-			}
+			out_buffer[recvret - 16] = '\0';
+			fwrite(out_buffer, recvret - 16, 1, out);
+			writesize += recvret - 16;
+
 			fflush(out);
 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
 			filesize += writesize;
@@ -345,7 +335,6 @@ void distantmode(char *port, char *password)
 		{
 			break;
 		}
-		
 
 		memset(in_buffer, 0, 1040);
 	}

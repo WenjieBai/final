@@ -317,7 +317,7 @@ void distantmode(char *address, char *password)
 
 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
 	printf("transmitting to %s.\n", address);
-	printf("successfully received.\n");
+	printf("successfully transmitted %d bytes.\n", total_size);
 
 	close(sockfd);
 
