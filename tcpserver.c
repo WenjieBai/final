@@ -75,7 +75,7 @@ int main()
 	} 
 	else
 		printf("decryption_side listening..\n"); 
-        
+
 	len = sizeof(encryption_side); 
 
 	// Accept the data packet from encryption_sideent and verification 
@@ -91,6 +91,7 @@ int main()
         }
 
 	// Function for chatting between encryption_sideent and decryption_side 
+    char buff[80];
     read(sockfd, buff, sizeof(buff));
 
 	// After chatting close the socket 

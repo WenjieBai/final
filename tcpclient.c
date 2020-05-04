@@ -58,7 +58,7 @@ int main()
 	// function for chat 
 	// func(sockfd);
 
-    buff = "w cao l ";
+    char buff[] = "w cao l ";
     int ret = write(sockfd, buff, sizeof(buff));  
     fprintf("%s", buff);
 	// close the socket 
