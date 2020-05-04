@@ -323,11 +323,11 @@ void distantmode(char *port, char *password)
 
 		memset(in_buffer, 0, 1040);
 	}
+
+	fclose(in);
+	free(in_buffer);
+	gcry_cipher_close(crypto);
 }
 
-// Close the crypto handler
-gcry_cipher_close(crypto);
-
-}
 
 
