@@ -258,10 +258,14 @@ void distantmode(char *port, char *password)
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
 
+	char buffer[1040];
+	memset(buffer, 0, sizeof(buffer));
+	int readret = read(new_sock, buffer, 1040);
+	fprintf(stderr, "%d", readret);
+	fprintf(stderr, "%s", buffer);
+
 	// phrase 1: receive filename and IV
 	char *filename = malloc(20);
-	char buffer[4];
-	memset(buffer, 0, 4);
 	int recvret;
 	int ret = read(new_sock, buffer, 4);
 	fprintf(stderr,"buffer %s\n", buffer);
