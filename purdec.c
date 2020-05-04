@@ -206,15 +206,16 @@ void distantmode(char *port, char *password)
 	printf("distant mode\n");
 
 
-	//create socket aand new_socketfd
+	//create socket aand new_sock
 	int sockfd;
-	int new_socketfd;
+	int new_sock;
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
+	fprintf(stderr, "fd %d\n", sockfd);
 
 	struct sockaddr_in encryption_side;
 	struct sockaddr_in decryption_side;
@@ -222,6 +223,7 @@ void distantmode(char *port, char *password)
 	socklen_t enc_len = sizeof(encryption_side);
 	socklen_t dec_len = sizeof(decryption_side);
 
+	memset(&encryption_side, 0, sizeof(encryption_side));
 	memset(&decryption_side, 0, sizeof(decryption_side));
 
 	//populate address
@@ -236,14 +238,14 @@ void distantmode(char *port, char *password)
 		exit(0);
 	}
 
-	// // print port number
-    if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
-        perror("getsockname");
-    else
-    {
-        fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
-        fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
-    }
+	//  // print port number
+    // if (getsockname(sockfd, (struct sockaddr *)&decryption_side, &dec_len) == -1)
+    //     perror("getsockname");
+    // else
+    // {
+    //     fprintf(stderr, "port number %d\n", ntohs(decryption_side.sin_port));
+    //     fprintf(stderr, "ip address  %s\n", inet_ntoa(decryption_side.sin_addr));
+    // }
 
 
 	//listen
@@ -255,12 +257,12 @@ void distantmode(char *port, char *password)
 
 	printf("waiting for connnection\n");
 
-	if (new_socketfd = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
+	if (new_sock = accept(sockfd, (struct sockaddr *)&encryption_side, &enc_len) < 0)
 	{
 		perror("accept error");
 		exit(0);
 	}
-	fprintf(stderr, "new sock %d", new_socketfd);
+	fprintf(stderr, "new sock %d", new_sock);
 
 
 	printf("connection from %s : %d\n", inet_ntoa(encryption_side.sin_addr), ntohs(encryption_side.sin_port));
@@ -269,11 +271,11 @@ void distantmode(char *port, char *password)
 	char *filename = malloc(20);
 	char bu[4];
 	int recvret;
-	int ret = recv(new_socketfd, bu, 4, 0);
+	int ret = recv(new_sock, bu, 4, 0);
 	fprintf(stderr,"bu %s\n", bu);
 	fprintf(stderr,"ret %d", ret);
 
-	if(recvret = read(new_socketfd, filename, 20) < 0)
+	if(recvret = read(new_sock, filename, 20) < 0)
 	{
 		perror("filename error\n");
 	}
@@ -284,7 +286,7 @@ void distantmode(char *port, char *password)
 
 
 	char *IV = malloc(16);
-	if((recvret = recv(new_socketfd, IV, 16, 0)) < 0)
+	if((recvret = recv(new_sock, IV, 16, 0)) < 0)
 	{
 		perror("recv iv error.\n");
 	}
@@ -310,7 +312,7 @@ void distantmode(char *port, char *password)
 	int writesize = 0;
 	while (1)
 	{
-		recvret = recv(new_socketfd, in_buffer, 1040, 0);
+		recvret = recv(new_sock, in_buffer, 1040, 0);
 		in_buffer[recvret] = '\0';
 
 		//dencrypt the data
