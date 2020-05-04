@@ -84,7 +84,10 @@ int main()
 		exit(0); 
 	} 
 	else
-		printf("server acccept the client...\n"); 
+		{
+            printf("server acccept the client...\n"); 
+            printf("new fd %d\n", connfd);
+        }
 
 	// Function for chatting between client and server 
 	func(connfd); 
