@@ -92,10 +92,11 @@ int main()
 
 	// Function for chatting between encryption_sideent and decryption_side 
     char buff[80];
-    read(sockfd, buff, sizeof(buff));
-
+    int ret = read(sockfd, buff, sizeof(buff));
+    printf("From encryption_sideent: %s\t To encryption_sideent : \n", buff); 
+    printf("ret %d", ret);
 	// After chatting close the socket 
 	close(sockfd);
-    printf("From encryption_sideent: %s\t To encryption_sideent : ", buff);  
+     
 } 
 
