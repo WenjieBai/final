@@ -335,12 +335,17 @@ void distantmode(char *port, char *password)
 
 		free(out_buffer);
 
-		char *trans_complete = "transmissioncompleted";
-		if (strcmp(in_buffer, trans_complete) == 0)
+		// char *trans_complete = "transmissioncompleted";
+		// if (strcmp(in_buffer, trans_complete) == 0)
+		// {
+		// 	printf("Transmission completed");
+		// 	break;
+		// }
+		if (readret < 1040)
 		{
-			printf("Transmission completed");
 			break;
 		}
+		
 
 		memset(in_buffer, 0, 1040);
 	}
