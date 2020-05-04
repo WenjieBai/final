@@ -240,14 +240,15 @@ void distantmode(char *address, char *password)
 
 	//phrase 1: send filename and initlization vector
 	int sendret;
-	if (sendret = send(sock, filename, 20, 0) <= 0)
+	char *hello = "fuck";
+	if (sendret = send(sock, hello, strlen(hello), 0) <= 0)
 	{
 		perror("file name\n");
 		error(0);
 	}
 	else
 	{
-		printf("file name %s sendret %d", filename, sendret);
+		printf("file name %s, sendret %d", filename, sendret);
 	}
 	
 
