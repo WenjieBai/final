@@ -229,7 +229,7 @@ void distantmode(char *port, char *password)
 	decryption_side.sin_port = htons(atoi(port));
 
 	//bind
-	if (bind(sockfd, (struct sockaddr *)&decryption_side, dec_len < 0)
+	if (bind(sockfd, (struct sockaddr *)&decryption_side, dec_len) < 0)
 	{
 		perror("bind error\n");
 		exit(0);
