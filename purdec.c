@@ -304,7 +304,7 @@ void distantmode(char *port, char *password)
 			else
 			{
 				out_buffer[recvret - 16] = '\0';
-				fwrite(out_size, recvret - 16, 1, out);
+				fwrite(out_buffer, recvret - 16, 1, out);
 				writesize += recvret - 16;
 			}
 			fflush(out);
