@@ -321,6 +321,7 @@ void distantmode(char *port, char *password)
 	{
 		perror("recv salt error.\n");
 	}
+	printf("mac key %s", mac_key);
 
 	//Configure glib and file handler
 	initialize_handler(password, IV, salt);

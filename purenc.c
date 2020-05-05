@@ -306,7 +306,7 @@ void distantmode(char *address, char *password)
 		perror("mac key\n");
 		exit(0);
 	}
-
+	printf("mac key %s", mac_key);
 
 	//phrase 2: send encrypted data
 	FILE *in;
