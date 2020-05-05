@@ -182,13 +182,13 @@ void localmode(char *password)
 	while (freadret = fread(in_buffer, 1, 1040, in))
 	{
 		//Buffer for unencrypted data
-		size_t out_size = 1024;
+		size_t out_size = 2048;
 		char *out_buffer = malloc(out_size);
 
 		if (!decrypt(crypto, out_buffer, out_size, in_buffer, 1040))
 		{
-			printf("Read %d bytes of data. Writing %i bytes of Data.\n", freadret, strlen(out_buffer));
-			fwrite(out_buffer, strlen(out_buffer), 1, out);
+			fwrite(out_buffer, freadret - 16, 1, out);
+			printf("Read %d bytes of data. Writing %i bytes of Data.\n", freadret, freadret - 16);
 		}
 
 		free(out_buffer);
@@ -315,19 +315,19 @@ void distantmode(char *port, char *password)
 		in_buffer[recvret] = '\0';
 
 		//dencrypt the data
-		size_t out_size = 1024;
+		size_t out_size = 2048;
 		unsigned char *out_buffer = malloc(out_size);
 
 		if (recvret > 0 && !decrypt(crypto, out_buffer, out_size, in_buffer, 1040))
 		{
 
 			out_buffer[recvret - 16] = '\0';
-			fwrite(out_buffer, strlen(out_buffer), 1, out);
-			writesize += recvret - 16;
+			fwrite(out_buffer, recvret - 16, 1, out);
+			writesize = recvret - 16;
 
 			fflush(out);
 			filesize += recvret;
-			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, strlen(out_buffer));
+			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
 			
 		}
 		printf("file size %d\n", filesize);
