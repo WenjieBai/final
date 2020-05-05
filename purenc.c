@@ -301,7 +301,7 @@ void distantmode(char *address, char *password)
 	in = fopen(filename, "r");
 	char *in_buffer = malloc(1040);
 
-	char *mac_butter = malloc(1040);
+	char *mac_buffer = malloc(1040);
 	char *mac_key = malloc(1040); 
 	gen_random(mac_key, 1040);
 
@@ -340,7 +340,7 @@ void distantmode(char *address, char *password)
 			else
 			{
 				printf("wrote %d bytes\n", writeret);
-				hmac(out_buffer, readret + 16, mac_key, 1040, mac_butter);
+				hmac(out_buffer, readret + 16, mac_key, 1040, mac_buffer);
 			}
 
 			total_size += readret + 16;
