@@ -16,7 +16,6 @@
 #include "openssl/sha.h"
 
 gcry_cipher_hd_t crypto;
-gcry_mac_hd_t mac;
 gcry_error_t macErr;
 
 char *filename;
@@ -106,7 +105,7 @@ void hmac(
     int key_len,               /* length of authentication key  */
     char *output)
 {
-    unsigned char md_value[EVP_MAX_MD_SIZE]; //32 byte
+    unsigned char md_value[32]; //32 byte
     unsigned int md_len;
 
     HMAC(EVP_sha256(), key, key_len, data, data_len, md_value, &md_len);
@@ -348,10 +347,7 @@ void distantmode(char *address, char *password)
 		}
 	}
 
-	unsigned int tag_len = gcry_mac_get_algo_maclen (GCRY_MAC_HMAC_SHA256);
-	char *tag = malloc(tag_len);
-	macErr = gcry_mac_read(mac, tag, tag_len);
-	fprintf(stderr, "mac tag: %s", tag);
+	fprintf(stderr, "mac tag: %s", mac_buffer);
 
 	//phrase 3: end of transmission
 	// char *trans_complete = "transmissioncompleted";
