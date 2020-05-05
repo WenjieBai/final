@@ -11,9 +11,9 @@
 #include <sys/socket.h>
 #include <time.h>
 
-#include "g10lib.h"
-#include "cipher.h"
-#include "mac-internal.h"
+#include <openssl/crypto.h>
+#include <openssl/err.h>
+#include "openssl/sha.h"
 
 gcry_cipher_hd_t crypto;
 gcry_mac_hd_t mac;
@@ -99,17 +99,20 @@ void initialize_handler(char *password, char *vector, char *salt)
 	}
 }
 
-void initialize_mac(char *mac_key, char *mac_iv)
+void hmac(
+    const unsigned char *data, /* pointer to data stream        */
+    int data_len,              /* length of data stream         */
+    const unsigned char *key,  /* pointer to authentication key */
+    int key_len,               /* length of authentication key  */
+    char *output)
 {
-	gcry_error_t macError = gcry_mac_open(
-		&mac,
-		GCRY_MAC_HMAC_SHA256,
-		0,
-		NULL);
+    unsigned char md_value[EVP_MAX_MD_SIZE]; //32 byte
+    unsigned int md_len;
 
-		gcry_mac_setkey (mac, mac_key, strlen(mac_key));
+    HMAC(EVP_sha256(), key, key_len, data, data_len, md_value, &md_len);
 
-		gcry_mac_setiv (mac, mac_iv, strlen(mac_iv));
+    memcpy(output, md_value, md_len);
+
 }
 
 int main(int argc, char *argv[])
@@ -300,7 +303,8 @@ void distantmode(char *address, char *password)
 	char *in_buffer = malloc(1040);
 
 	char *mac_butter = malloc(1040);
-	initialize_mac("12345678", "87654321");
+	char *mac_key = malloc(1040); 
+	gen_random(mac_key, 1040);
 
 	int readret;
 
@@ -337,7 +341,7 @@ void distantmode(char *address, char *password)
 			else
 			{
 				printf("wrote %d bytes\n", writeret);
-				macErr = gcry_mac_write (mac, mac_butter, 1040);
+				hmac(out_buffer, readret + 16, mac_key, 1040, mac_butter);
 			}
 
 			total_size += readret + 16;
