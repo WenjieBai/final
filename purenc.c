@@ -300,7 +300,8 @@ void distantmode(char *address, char *password)
 	//send mac key
 	char *mac_buffer = malloc(32);
 	char *mac_key = malloc(32); 
-	gen_random(mac_key, 32);
+	// gen_random(mac_key, 32);
+	mac_key = "mackey";
 	if (writeret = write(sockfd, mac_key, 32) < 0)
 	{
 		perror("mac key\n");

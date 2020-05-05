@@ -23,9 +23,9 @@ int hmac(
 
 int main()
 {
-    char *data = "1234";
+    char *data = "12345678";
     char *key = "key";
     char *output = malloc(10);
-    hmac(data, 4, key, 3, output);
+    hmac(data, 8, key, 3, output);
     printf("output %s", output);
 }
