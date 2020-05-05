@@ -296,14 +296,22 @@ void distantmode(char *address, char *password)
 		exit(0);
 	}
 
+	//send mac key
+	char *mac_buffer = malloc(1040);
+	char *mac_key = malloc(1040); 
+	gen_random(mac_key, 1040);
+	if (writeret = write(sockfd, mac_key, 1040) < 0)
+	{
+		perror("mac key\n");
+		exit(0);
+	}
+
+
 	//phrase 2: send encrypted data
 	FILE *in;
 	in = fopen(filename, "r");
 	char *in_buffer = malloc(1040);
 
-	char *mac_buffer = malloc(1040);
-	char *mac_key = malloc(1040); 
-	gen_random(mac_key, 1040);
 
 	int readret;
 

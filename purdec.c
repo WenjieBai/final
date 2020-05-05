@@ -10,6 +10,10 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
+#include <openssl/crypto.h>
+#include <openssl/err.h>
+#include "openssl/sha.h"
+
 #define DEBUG 0
 
 //Create crypto handler at global scope
@@ -78,6 +82,24 @@ void initialize_handler(char *password, char *vector, char *salt)
 		exit(0);
 	}
 }
+
+
+void hmac(
+    const unsigned char *data, /* pointer to data stream        */
+    int data_len,              /* length of data stream         */
+    const unsigned char *key,  /* pointer to authentication key */
+    int key_len,               /* length of authentication key  */
+    char *output)
+{
+    unsigned char md_value[32]; //32 byte
+    unsigned int md_len;
+
+    HMAC(EVP_sha256(), key, key_len, data, data_len, md_value, &md_len);
+
+    memcpy(output, md_value, md_len);
+
+}
+
 
 int decrypt(gcry_cipher_hd_t h, unsigned char *out, size_t outsize, unsigned char *in, size_t inlen)
 {
@@ -261,7 +283,7 @@ void distantmode(char *port, char *password)
 
 	printf("connection from %s : %d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-	// phrase 1: receive filename and IV
+	// phrase 1: receive filename and IV salt mac key
 	char *filename = malloc(20);
 	int recvret;
 
@@ -285,8 +307,17 @@ void distantmode(char *port, char *password)
 		// printf("IV %s", IV);
 	}
 
+	// recv salt
 	char *salt = malloc(16);
 	if ((recvret = recv(connfd, salt, 16, 0)) < 0)
+	{
+		perror("recv salt error.\n");
+	}
+
+	// recv mac key
+	char *mac_buffer = malloc(1040);
+	char *mac_key = malloc(1040);
+	if ((recvret = recv(connfd, mac_key, 16, 0)) < 0)
 	{
 		perror("recv salt error.\n");
 	}
@@ -328,6 +359,8 @@ void distantmode(char *port, char *password)
 			fflush(out);
 			filesize += recvret;
 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
+
+			hmac(in_buffer, 1040, mac_key, 1040, mac_buffer);
 			
 		}	
 	
@@ -347,6 +380,7 @@ void distantmode(char *port, char *password)
 		memset(in_buffer, 0, 1040);
 	}
 
+	printf("mac buffer %s", mac_buffer);
 	printf("file size %d\n", filesize);
 	fclose(out);
 	free(in_buffer);
