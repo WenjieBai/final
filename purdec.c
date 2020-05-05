@@ -315,21 +315,22 @@ void distantmode(char *port, char *password)
 		in_buffer[recvret] = '\0';
 
 		//dencrypt the data
-		size_t out_size = 2048;
-		unsigned char *out_buffer = malloc(2048);
+		size_t out_size = 1024;
+		unsigned char *out_buffer = malloc(out_size);
 
-		if (recvret > 0 && !decrypt(crypto, out_buffer, out_size, in_buffer, 2048))
+		if (recvret > 0 && !decrypt(crypto, out_buffer, out_size, in_buffer, 1040))
 		{
 
 			out_buffer[recvret - 16] = '\0';
-			fwrite(out_buffer, recvret - 16, 1, out);
+			fwrite(out_buffer, strlen(out_buffer), 1, out);
 			writesize += recvret - 16;
 
 			fflush(out);
-			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
-			filesize += writesize;
+			filesize += recvret;
+			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, strlen(out_buffer));
+			
 		}
-
+		printf("file size %d\n", filesize);
 		free(out_buffer);
 
 		// char *trans_complete = "transmissioncompleted";
