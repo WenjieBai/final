@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  4 MAY 2020 22:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  4 MAY 2020 23:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -212,7 +212,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (27.97566pt too wide) in paragraph at lines 63--64
+Overfull \hbox (27.97566pt too wide) in paragraph at lines 66--67
 []\OT1/cmr/m/n/10.95 PBKDF2 re-quires both pass-word and salt as in-put, there 
 is func-tion called \OT1/cmtt/m/n/10.95 generateRandom()
  []
@@ -220,20 +220,20 @@ is func-tion called \OT1/cmtt/m/n/10.95 generateRandom()
 <local1.png, id=11, 713.66624pt x 637.38126pt>
 File: local1.png Graphic file (type png)
 <use local1.png>
-Package pdftex.def Info: local1.png  used on input line 79.
+Package pdftex.def Info: local1.png  used on input line 82.
 (pdftex.def)             Requested size: 499.56296pt x 446.16383pt.
 
-Overfull \hbox (69.55833pt too wide) in paragraph at lines 79--80
+Overfull \hbox (69.55833pt too wide) in paragraph at lines 82--83
  [][] 
  []
 
 <local2.png, id=13, 698.61pt x 575.14874pt>
 File: local2.png Graphic file (type png)
 <use local2.png>
-Package pdftex.def Info: local2.png  used on input line 92.
+Package pdftex.def Info: local2.png  used on input line 95.
 (pdftex.def)             Requested size: 489.02367pt x 402.60138pt.
 
-Overfull \hbox (59.01904pt too wide) in paragraph at lines 92--93
+Overfull \hbox (59.01904pt too wide) in paragraph at lines 95--96
  [][] 
  []
 
@@ -241,7 +241,7 @@ Overfull \hbox (59.01904pt too wide) in paragraph at lines 92--93
 <distant.png, id=25, 1428.33624pt x 807.015pt>
 File: distant.png Graphic file (type png)
 <use distant.png>
-Package pdftex.def Info: distant.png  used on input line 111.
+Package pdftex.def Info: distant.png  used on input line 114.
 (pdftex.def)             Requested size: 428.50418pt x 242.10637pt.
  [5 <./distant.png>]
 (./finalreport.aux) ) 
@@ -259,7 +259,7 @@ onts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmr12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmr17.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmtt10.pfb>
-Output written on finalreport.pdf (5 pages, 2286189 bytes).
+Output written on finalreport.pdf (5 pages, 2286551 bytes).
 PDF statistics:
  47 PDF objects out of 1000 (max. 8388607)
  28 compressed objects within 1 object stream
