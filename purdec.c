@@ -315,9 +315,9 @@ void distantmode(char *port, char *password)
 	}
 
 	// recv mac key
-	char *mac_buffer = malloc(1040);
-	char *mac_key = malloc(1040);
-	if ((recvret = recv(connfd, mac_key, 1040, 0)) < 0)
+	char *mac_buffer = malloc(32);
+	char *mac_key = malloc(32);
+	if ((recvret = recv(connfd, mac_key, 32, 0)) < 0)
 	{
 		perror("recv salt error.\n");
 	}
@@ -361,7 +361,7 @@ void distantmode(char *port, char *password)
 			filesize += recvret;
 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
 
-			hmac(in_buffer, 1040, mac_key, 1040, mac_buffer);
+			hmac(in_buffer, 1040, mac_key, 32, mac_buffer);
 			
 		}	
 	
