@@ -36,7 +36,7 @@ void gen_random(char *s, const int len)
 	s[len] = 0;
 }
 
-void initialize_handler(char *password, char *vector)
+void initialize_handler(char *password, char *vector, char *salt)
 {
 	char *key[32];
 	unsigned int key_len = 32;
@@ -48,8 +48,8 @@ void initialize_handler(char *password, char *vector)
 			strlen(password),
 			GCRY_KDF_PBKDF2,
 			GCRY_MD_SHA256,
-			password,
-			strlen(password),
+			salt,
+			strlen(salt),
 			1024,
 			key_len,
 			key);
@@ -144,7 +144,8 @@ void localmode(char *password)
 {
 	printf("local mode\n");
 	char *vector = "InitializationVector";
-	initialize_handler(password, vector);
+	char *salt = "IamSaltValue";
+	initialize_handler(password, vector, salt);
 	//Create file handler and file buffer
 	FILE *in;
 	FILE *out;
@@ -216,8 +217,10 @@ void distantmode(char *address, char *password)
 	size_t vector_len = gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
 	char *vector = malloc(vector_len);
 	gen_random(vector, vector_len);
-	printf("iv %s", vector);
-	initialize_handler(password, vector);
+	// printf("iv %s", vector);
+	char *salt = mallot(vector_len);
+	gen_random(salt, vector_len);
+	initialize_handler(password, vector, salt);
 
 	char *ip = strtok(address, ":");
 	char *port = strtok(NULL, ":");
@@ -262,6 +265,12 @@ void distantmode(char *address, char *password)
 	if (writeret = write(sockfd, vector, vector_len) < 0)
 	{
 		perror("IV error\n");
+		exit(0);
+	}
+
+	if (writeret = write(sockfd, salt, vector_len) < 0)
+	{
+		perror("salt error\n");
 		exit(0);
 	}
 

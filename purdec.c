@@ -23,7 +23,7 @@ int distant_mode;
 void localmode(char *password);
 void distantmode(char *port, char *password);
 
-void initialize_handler(char *password, char *vector)
+void initialize_handler(char *password, char *vector, char *salt)
 {
 	char *key[32];
 	unsigned int key_len = 32;
@@ -35,8 +35,8 @@ void initialize_handler(char *password, char *vector)
 			strlen(password),
 			GCRY_KDF_PBKDF2,
 			GCRY_MD_SHA256,
-			password,
-			strlen(password),
+			salt,
+			strlen(salt),
 			1024,
 			key_len,
 			key);
@@ -149,7 +149,8 @@ void localmode(char *password)
 
 	// initialize crypto handler
 	char *vector = "InitializationVector";
-	initialize_handler(password, vector);
+	char *salt = "IamSaltValue";
+	initialize_handler(password, vector, salt);
 
 	//Create file handler and file buffer
 	FILE *in;
@@ -175,19 +176,19 @@ void localmode(char *password)
 	}
 
 	//decrypt the data from file
-	char *in_buffer = malloc(2048);
+	char *in_buffer = malloc(1040);
 	int freadret;
 
 	while (freadret = fread(in_buffer, 1, 1040, in))
 	{
 		//Buffer for unencrypted data
-		size_t out_size = 2048;
-		char *out_buffer = malloc(2048);
+		size_t out_size = 1024;
+		char *out_buffer = malloc(out_size);
 
-		if (!decrypt(crypto, out_buffer, out_size, in_buffer, 2048))
+		if (!decrypt(crypto, out_buffer, out_size, in_buffer, 1040))
 		{
-			printf("Read %d bytes of data. Writing %i bytes of Data.\n", freadret, freadret - 16);
-			fwrite(out_buffer, freadret - 16, 1, out);
+			printf("Read %d bytes of data. Writing %i bytes of Data.\n", freadret, strlen(out_buffer));
+			fwrite(out_buffer, strlen(out_buffer), 1, out);
 		}
 
 		free(out_buffer);
@@ -281,11 +282,17 @@ void distantmode(char *port, char *password)
 	else
 	{
 		IV[16] = '\0';
-		printf("IV %s", IV);
+		// printf("IV %s", IV);
+	}
+
+	char *salt = malloc(16);
+	if ((recvret = recv(connfd, salt, 16, 0)) < 0)
+	{
+		perror("recv salt error.\n");
 	}
 
 	//Configure glib and file handler
-	initialize_handler(password, IV);
+	initialize_handler(password, IV, salt);
 
 	FILE *out;
 	if (out = fopen(filename, "r"))
