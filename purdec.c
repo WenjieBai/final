@@ -329,8 +329,7 @@ void distantmode(char *port, char *password)
 			filesize += recvret;
 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
 			
-		}
-		printf("file size %d\n", filesize);
+		}	
 		free(out_buffer);
 
 		// char *trans_complete = "transmissioncompleted";
@@ -341,6 +340,7 @@ void distantmode(char *port, char *password)
 		// }
 		if (recvret < 1040)
 		{
+			printf("file size %d\n", filesize);
 			break;
 		}
 
