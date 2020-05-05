@@ -66,6 +66,7 @@ PBKDF2 requires both password and salt as input, there is function called \textt
 Q: Number of hours spent on the project : about 24.
 
 \section{results}
+\subsection{local mode}
 Local mode encryption is shown in Fig. \ref{fig1}. 
 \begin{enumerate}
 \item remove hello.txt.pur; 
@@ -93,4 +94,22 @@ Local mode decryption is shown in Fig. \ref{fig2}
    \label{fig2}
 \end{figure}
 
+\subsection{distant mode}
+
+Results are shown in Fig. \ref{fig3}. 
+
+distant mode decryption.
+\begin{enumerate}
+\item copy hello.txt to check.txt;
+\item remove hello.txt.
+\item receive encrypted file and decrypt it into hello.txt;
+\item diff -s hello.txt check.txt. Those files are identical.
+\end{enumerate}
+
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[scale = 0.3]{distant.png} % requires the graphicx package
+   \caption{distant mode}
+   \label{fig3}
+\end{figure}
 \end{document}  

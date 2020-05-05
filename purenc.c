@@ -12,6 +12,9 @@
 #include <time.h>
 
 gcry_cipher_hd_t crypto;
+gcry_mac_hd_t mac;
+gcry_error_t macErr;
+
 char *filename;
 char *filename_suffix;
 int local_mode;
@@ -90,6 +93,19 @@ void initialize_handler(char *password, char *vector, char *salt)
 		printf("%s: %s\n", gcry_strsource(cryptoError), gcry_strerror(cryptoError));
 		exit(0);
 	}
+}
+
+void initialize_mac(char *mac_key, char *mac_iv)
+{
+	gcry_error_t macError = gcry_mac_open(
+		&mac,
+		GCRY_MAC_HMAC_SHA256,
+		0,
+		NULL);
+
+		gcry_mac_setkey (mac, mac_key, strlen(mac_key));
+
+		gcry_mac_setiv (mac, mac_iv, strlen(mac_iv));
 }
 
 int main(int argc, char *argv[])
@@ -279,6 +295,9 @@ void distantmode(char *address, char *password)
 	in = fopen(filename, "r");
 	char *in_buffer = malloc(1040);
 
+	char *mac_butter = malloc(1040);
+	initialize_mac("12345678", "87654321");
+
 	int readret;
 
 	while ((readret = fread(in_buffer, 1, 1024, in)) > 0)
@@ -314,11 +333,17 @@ void distantmode(char *address, char *password)
 			else
 			{
 				printf("wrote %d bytes\n", writeret);
+				macErr = gcry_mac_write (mac, mac_butter, 1040);
 			}
 
 			total_size += readret + 16;
 		}
 	}
+
+	unsigned int tag_len = gcry_mac_get_algo_maclen (GCRY_MAC_HMAC_SHA256);
+	char *tag = malloc(tag_len);
+	macErr = gcry_mac_read(mac, tag, tag_len);
+	fprintf(stderr, "mac tag: %s", tag);
 
 	//phrase 3: end of transmission
 	// char *trans_complete = "transmissioncompleted";
