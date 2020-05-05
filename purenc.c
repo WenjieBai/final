@@ -11,6 +11,10 @@
 #include <sys/socket.h>
 #include <time.h>
 
+#include "g10lib.h"
+#include "cipher.h"
+#include "./mac-internal.h"
+
 gcry_cipher_hd_t crypto;
 gcry_mac_hd_t mac;
 gcry_error_t macErr;
