@@ -218,7 +218,7 @@ void distantmode(char *address, char *password)
 	char *vector = malloc(vector_len);
 	gen_random(vector, vector_len);
 	// printf("iv %s", vector);
-	char *salt = mallot(vector_len);
+	char *salt = malloc(vector_len);
 	gen_random(salt, vector_len);
 	initialize_handler(password, vector, salt);
 
