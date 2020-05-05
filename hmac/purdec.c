@@ -346,13 +346,6 @@ void distantmode(char *port, char *password)
 		recvret = recv(connfd, in_buffer, 1040, 0);
 		in_buffer[recvret] = '\0';
 
-		char *trans_complete = "transmissioncompleted";
-		if (strcmp(in_buffer, trans_complete) == 0)
-		{
-			printf("Transmission completed");
-			break;
-		}
-
 		//dencrypt the data
 		size_t out_size = 2048;
 		unsigned char *out_buffer = malloc(out_size);
@@ -374,8 +367,16 @@ void distantmode(char *port, char *password)
 	
 		free(out_buffer);
 
-	
-	
+		// char *trans_complete = "transmissioncompleted";
+		// if (strcmp(in_buffer, trans_complete) == 0)
+		// {
+		// 	printf("Transmission completed");
+		// 	break;
+		// }
+		if (recvret < 1040)
+		{
+			break;
+		}
 
 		memset(in_buffer, 0, 1040);
 	}

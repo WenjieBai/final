@@ -359,8 +359,8 @@ void distantmode(char *address, char *password)
 	fprintf(stderr, "mac tag: %s", mac_buffer);
 
 	//phrase 3: end of transmission
-	char *trans_complete = "transmissioncompleted";
-	send(sockfd, trans_complete, strlen(trans_complete), 0);
+	// char *trans_complete = "transmissioncompleted";
+	// send(sockfd, trans_complete, strlen(trans_complete), 0);
 
 	printf("Successfully encrypted file %s to %s (%d bytes written.\n", filename, filename_suffix, total_size);
 	printf("transmitting to %s.\n", address);

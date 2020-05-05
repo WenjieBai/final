@@ -32,7 +32,7 @@ file encryption/decryption in local mode; secure file transmission in distant mo
 \item prompt password;
 \item call \texttt{localmode()} or \texttt{distantmode()} depending on arguments.
 \item if in local mode,  initialize \texttt{gcrypt} handler \verb|gcry_cipher_hd_t|, read input file contents, write encrypted contents into output file.
-\item if in distant mode, generate salt value using in key derivation, initialization vector used in AES256 encryption, send filename, salt and initialization vector in phase 1; send encrypted contents in phase 2.
+\item if in distant mode, generate salt value using in key derivation, initialization vector used in AES256 encryption, send filename, salt and initialization vector, hmac key in phase 1; send encrypted contents in phase 2.
 \end{enumerate}
 
 ./purdec
@@ -42,7 +42,9 @@ file encryption/decryption in local mode; secure file transmission in distant mo
 \item prompt password;
 \item call \texttt{localmode()} or \texttt{distantmode()} depending on arguments.
 \item if in local mode,  initialize \texttt{gcrypt} handler \verb|gcry_cipher_hd_t|, read input file contents, write decrypted contents into output file.
-\item if in distant mode, receive filename, salt value using in key derivation, initialization vector used in AES256 encryption in phase 1; receive encrypted contents in phase 2 and write decrypted contents into output file .
+\item if in distant mode, receive filename, salt value using in key derivation, initialization vector used in AES256 encryption, hmac key in phase 1; receive encrypted contents in phase 2 and write decrypted contents into output file.
+\item receive hmac tag;
+\item verify hmac tag.
 \end{enumerate}
 
 \section{program usage}
