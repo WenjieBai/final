@@ -317,7 +317,7 @@ void distantmode(char *port, char *password)
 	// recv mac key
 	char *mac_buffer = malloc(1040);
 	char *mac_key = malloc(1040);
-	if ((recvret = recv(connfd, mac_key, 16, 0)) < 0)
+	if ((recvret = recv(connfd, mac_key, 1040, 0)) < 0)
 	{
 		perror("recv salt error.\n");
 	}

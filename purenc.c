@@ -290,6 +290,7 @@ void distantmode(char *address, char *password)
 		exit(0);
 	}
 
+	//send salt
 	if (writeret = write(sockfd, salt, vector_len) < 0)
 	{
 		perror("salt error\n");
@@ -348,7 +349,7 @@ void distantmode(char *address, char *password)
 			else
 			{
 				printf("wrote %d bytes\n", writeret);
-				hmac(out_buffer, readret + 16, mac_key, 1040, mac_buffer);
+				hmac(out_buffer, 1040, mac_key, 1040, mac_buffer);
 			}
 
 			total_size += readret + 16;
