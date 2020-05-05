@@ -341,13 +341,13 @@ void distantmode(char *port, char *password)
 		// }
 		if (recvret < 1040)
 		{
-			printf("file size %d\n", filesize);
 			break;
 		}
 
 		memset(in_buffer, 0, 1040);
 	}
 
+	printf("file size %d\n", filesize);
 	fclose(out);
 	free(in_buffer);
 	gcry_cipher_close(crypto);
