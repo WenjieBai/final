@@ -330,6 +330,7 @@ void distantmode(char *port, char *password)
 			printf("Recieved %d bytes of data. Writing %i bytes of Data.\n", recvret, writesize);
 			
 		}	
+	
 		free(out_buffer);
 
 		// char *trans_complete = "transmissioncompleted";
